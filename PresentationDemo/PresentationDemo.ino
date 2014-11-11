@@ -9,9 +9,9 @@
 
   Gilchrist 6/2/2014 1.0
 */
-#define d6 6
-#define d5 5
-#define d4 4
+#define d6 6 //piezzo, pwm output
+#define d5 5 //button 1, active high
+#define d4 4 //button 2, active high
 #define sclk 13  // Don't change
 #define mosi 11  // Don't change
 #define cs   9
@@ -31,7 +31,7 @@ uint32_t targetTime = 0;                    // for next 1 second timeout
 uint8_t hh=conv2d(__TIME__), mm=conv2d(__TIME__+3), ss=conv2d(__TIME__+6);  // Get H, M, S from compile time
 
 void setup(void) {
-  pinMode(d5, INPUT);
+  pinMode(d5, INPUT); //set the pinmodes for buttons
   pinMode(d4, INPUT);
 
   tft.init();
@@ -40,23 +40,26 @@ void setup(void) {
   tft.fillScreen(QDTech_BLACK);
   tft.setTextColor(QDTech_WHITE, QDTech_BLACK);  // Adding a black background colour erases previous text automatically
   
-  // Draw clock face
-  tft.fillCircle(64, 64, 61, QDTech_BLUE);
-  tft.fillCircle(64, 64, 57, QDTech_BLACK);
-
-  // Draw 12 lines
-  for(int i = 0; i<360; i+= 30) {
-    sx = cos((i-90)*0.0174532925);
-    sy = sin((i-90)*0.0174532925);
-    x0 = sx*57+64;
-    y0 = sy*57+64;
-    x1 = sx*50+64;
-    y1 = sy*50+64;
-    
-    tft.drawLine(x0, y0, x1, y1, QDTech_BLUE);
-  }
-  tft.fillCircle(65, 65, 3, QDTech_RED);
-  tft.setCursor (34, 151);
+  // Draw UI Boxes face
+              //x, y, width, height, color
+  tft.drawRect(0,0,128,160,QDTech_BLUE); //main box
+  //top boxes
+  tft.drawRect(0,0,64, 25, QDTech_BLUE);
+  tft.drawRect(64,0,64,25, QDTech_BLUE);
+  //bot box
+  tft.drawRect(0, 135, 128, 25, QDTech_BLUE);
+  //steps
+  tft.setCursor(3,3);
+  tft.print("Steps: ");
+  tft.setCursor(3,15);
+  tft.print("0");
+  //battery
+  tft.setCursor(68,3);
+  tft.print("Battery: ");
+  tft.setCursor(68, 15);
+  tft.print("100%");
+  //time
+  tft.setCursor (34, 150);
   tft.print(__DATE__);
   targetTime = millis() + 1000; 
 }
@@ -64,8 +67,12 @@ void setup(void) {
 void loop() {
   if (digitalRead(d5)){
     analogWrite(d6, HIGH);
+    tft.fillCircle(64,80,40, QDTech_RED);
+    analogWrite(d6, LOW);
   }
   if (digitalRead(d4)){
+    analogWrite(d6, HIGH);
+    tft.fillCircle(64,80,40, QDTech_BLACK);
     analogWrite(d6, LOW);
   }
   if (targetTime < millis()) {
@@ -83,31 +90,8 @@ void loop() {
       }
     }
 
-    // Pre-compute hand degrees, x & y coords for a fast screen update
-    sdeg = ss*6;                  // 0-59 -> 0-354
-    mdeg = mm*6+sdeg*0.01666667;  // 0-59 -> 0-360 - includes seconds
-    hdeg = hh*30+mdeg*0.0833333;  // 0-11 -> 0-360 - includes minutes and seconds
-    hx = cos((hdeg-90)*0.0174532925);    hy = sin((hdeg-90)*0.0174532925);
-    mx = cos((mdeg-90)*0.0174532925);    my = sin((mdeg-90)*0.0174532925);
-    sx = cos((sdeg-90)*0.0174532925);    sy = sin((sdeg-90)*0.0174532925);
-
-    // Erase just old hand positions
-    tft.drawLine(ohx, ohy, 65, 65, QDTech_BLACK);  
-    tft.drawLine(omx, omy, 65, 65, QDTech_BLACK);  
-    tft.drawLine(osx, osy, 65, 65, QDTech_BLACK);
-    // Draw new hand positions  
-    tft.drawLine(hx*33+65, hy*33+65, 65, 65, QDTech_WHITE);
-    tft.drawLine(mx*44+65, my*44+65, 65, 65, QDTech_WHITE);
-    tft.drawLine(sx*47+65, sy*47+65, 65, 65, QDTech_RED);
-    tft.fillCircle(65, 65, 3, QDTech_RED);
-
-    // Update old x&y coords
-    osx = sx*47+65;    osy = sy*47+65;
-    omx = mx*44+65;    omy = my*44+65;
-    ohx = hx*33+65;    ohy = hy*33+65;
-
     // Update digital time
-    tft.setCursor (34, 140);
+    tft.setCursor (34, 138);
 
     if(hh>12) {
       if (hh<22) tft.print('0');      
