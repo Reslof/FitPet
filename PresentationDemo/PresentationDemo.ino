@@ -45,11 +45,11 @@ void setup(void) {
   pinMode(BTN2, INPUT);
 
   tft.init();
-  Serial.print("Initializing SD card...");
-  if (!SD.begin(SD_CS)) {
-    Serial.println("failed!");
-    return;
-  }
+//  Serial.print("Initializing SD card...");
+//  if (!SD.begin(SD_CS)) {
+//    Serial.println("failed!");
+//    return;
+//  }
   Serial.println("OK!");
 
   tft.setRotation(0);
@@ -97,18 +97,19 @@ void loop() {
 
   if (digitalRead(BTN1)) {
     analogWrite(PIEZO, HIGH);
-    bmpDraw("bidoof.bmp", 40, 40);
-    tft.fillRect(2, 26, 124, 99, QDTech_BLACK);
-    bmpDraw("bidoof.bmp", 40, 60);
-    tft.fillRect(2, 26, 124, 99, QDTech_BLACK);
-    bmpDraw("bidoof.bmp", 40, 40);
-    tft.fillRect(2, 26, 124, 99, QDTech_BLACK);
-    bmpDraw("bidoof.bmp", 40, 30);
+    //bmpDraw("bidoof.bmp", 40, 40);
+    //tft.fillRect(2, 26, 124, 99, QDTech_BLACK);
+    //bmpDraw("bidoof.bmp", 40, 60);
+    //tft.fillRect(2, 26, 124, 99, QDTech_BLACK);
+    //bmpDraw("bidoof.bmp", 40, 40);
+    //tft.fillRect(2, 26, 124, 99, QDTech_BLACK);
+    //bmpDraw("bidoof.bmp", 40, 30);
+    tft.fillCircle(65, 80, 40, QDTech_GREEN);
     analogWrite(PIEZO, LOW);
   }
   if (digitalRead(BTN2)) {
     analogWrite(PIEZO, HIGH);
-    tft.fillRect(2, 26, 124, 99, QDTech_BLACK);
+    tft.fillRect(2, 26, 124, 100, QDTech_BLACK);
     analogWrite(PIEZO, LOW);
   }
   UpdateClock();
