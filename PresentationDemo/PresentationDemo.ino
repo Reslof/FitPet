@@ -39,18 +39,24 @@ uint8_t hh = conv2d(__TIME__), mm = conv2d(__TIME__ + 3), ss = conv2d(__TIME__ +
 int steps = 0;
 int battery_level = 100;
 void setup(void) {
+
   Serial.begin(9600);
 
-  pinMode(BTN1, INPUT); //set the pinmodes for buttons
-  pinMode(BTN2, INPUT);
+  tft.init();  
 
-  tft.init();
   Serial.print("Initializing SD card...");
   if (!SD.begin(SD_CS)) {
     Serial.println("failed!");
     return;
   }
   Serial.println("OK!");
+
+  pinMode(BTN1, INPUT); //set the pinmodes for buttons
+  pinMode(BTN2, INPUT);
+
+  //Serial.print("Initializing SD card...");
+
+  //Serial.println("OK!");
 
   tft.setRotation(0);
   tft.fillScreen(QDTech_BLACK);
@@ -173,6 +179,7 @@ static uint8_t conv2d(const char* p) {
     v = *p - '0';
   return 10 * v + *++p - '0';
 }
+
 #define BUFFPIXEL 20
 
 void bmpDraw(char *filename, uint8_t x, uint8_t y) {
@@ -192,6 +199,11 @@ void bmpDraw(char *filename, uint8_t x, uint8_t y) {
 
   if((x >= tft.width()) || (y >= tft.height())) return;
 
+  Serial.println();
+  Serial.print("Loading image '");
+  Serial.print(filename);
+  Serial.println('\'');
+
   // Open requested file on SD card
   if ((bmpFile = SD.open(filename)) == NULL) {
     Serial.print("File not found");
@@ -200,16 +212,20 @@ void bmpDraw(char *filename, uint8_t x, uint8_t y) {
 
   // Parse BMP header
   if(read16(bmpFile) == 0x4D42) { // BMP signature
+    Serial.print("File size: "); 
     Serial.println(read32(bmpFile));
     (void)read32(bmpFile); // Read & ignore creator bytes
     bmpImageoffset = read32(bmpFile); // Start of image data
+    Serial.print("Image Offset: "); 
     Serial.println(bmpImageoffset, DEC);
     // Read DIB header
+    Serial.print("Header size: "); 
     Serial.println(read32(bmpFile));
     bmpWidth  = read32(bmpFile);
     bmpHeight = read32(bmpFile);
     if(read16(bmpFile) == 1) { // # planes -- must be '1'
       bmpDepth = read16(bmpFile); // bits per pixel
+      Serial.print("Bit Depth: "); 
       Serial.println(bmpDepth);
       if((bmpDepth == 24) && (read32(bmpFile) == 0)) { // 0 = uncompressed
 
@@ -299,6 +315,7 @@ uint32_t read32(File f) {
   ((uint8_t *)&result)[3] = f.read(); // MSB
   return result;
 }
+
 
 
 
