@@ -54,6 +54,7 @@ void setup(void);
 void bmpDraw(char *filename, uint8_t x, uint8_t y);
 uint16_t read16(File f);
 uint32_t read32(File f);
+void PlayScale(void);
 
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\cores\arduino\arduino.h"
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\variants\arduino_due_x\pins_arduino.h" 
