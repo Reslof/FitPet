@@ -74,9 +74,8 @@ void PrintVariable(unsigned char variable, int representation){
 	tft.setCursor(0, (27 + previousLine));
 	if (representation == ASCII){
 		tft.println(char(variable));
-	}
-	if (representation == HEX){
-		tft.println(variable, HEX);
+	}else{
+		tft.println(variable, representation);
 	}
 	previousLine += 10;
 	if (previousLine > 100){ //if more than 10 lines printed, start at top again
