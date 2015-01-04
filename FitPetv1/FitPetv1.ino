@@ -1,5 +1,5 @@
 /*
-*FitPet v0.3: Holiday Edition
+*FitPet v0.4: Holiday Edition
  
 * TODO: 
  -Integrate Accelerometer, RTC, Bluetooth
@@ -9,6 +9,10 @@
  More to be added.
 
 *HISTORY:
+1/3/2015 0.4
+Added more comments to code. Finally implemented animations from Flash memory. Massive speed increases. Smooth animations now possible.
+Created loading animations. Working on tools to automate animation creation.
+
 12/26/14 0.3
 Added comments to code. Integrated ClearBMP.
 */
@@ -20,7 +24,6 @@ Added comments to code. Integrated ClearBMP.
 #include <Wire\Wire.h>
 #include "gui.h"
 #include "hardware.h"
-//#include "loading.c"
 
 //globals
 TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC, TFT_RST);
