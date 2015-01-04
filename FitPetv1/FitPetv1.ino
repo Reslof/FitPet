@@ -20,12 +20,13 @@ Added comments to code. Integrated ClearBMP.
 #include <Wire\Wire.h>
 #include "gui.h"
 #include "hardware.h"
-#include "bigbidoof.c"
+//#include "loading.c"
 
 //globals
 TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC, TFT_RST);
 int steps = 0;
 int battery_level = 100;
+volatile int animateFlag = 0;
 
 void setup(void) {
 	unsigned int address = 0;
@@ -35,11 +36,10 @@ void setup(void) {
 	pinMode(BTN2, INPUT);
 	pinMode(BTN3, INPUT);
 
-	Serial.begin(9600); //initializes serial connection 
 	Wire.begin();		//initializes I2C bus
 	tft.init();			//initializes TFT
-
-	writeEEPROM(EEPROM, address, 0xFF); //writes test value on EEPROM
+	
+	//writeEEPROM(EEPROM, address, 0xFF); //writes test value on EEPROM
 	
 
   if (!initGUI()){
@@ -49,7 +49,10 @@ void setup(void) {
 	  DebugMessage("GUI init: FAILED");
 	  Serial.write("GUI init failed");
   }
-
+  
+  attachInterrupt(BTN3, setAnimateFlag, FALLING);
+  
+  /*
   if (!SD.begin(SD_CS)) {
 	  DebugMessage("SD init: FAILED");
 	  SPI.setClockDivider(SPI_CLOCK_DIV2); //required to speed up TFT SPI clock
@@ -77,13 +80,18 @@ void setup(void) {
 	DebugMessage("Printing letter A:");
 	PrintVariable(valueA, ASCII); //prints actual ascii letter!
 	*/
-  
 }
 
 void loop() {
 	if (battery_level < 0) {
 		battery_level = 100;
 	}
+	if (animateFlag){
+		analogWrite(PIEZO, HIGH);
+		LoadingScreenIcon();
+		analogWrite(PIEZO, LOW);
+	}
+
 	UpdateSteps(steps++);   //Updates steps UI
 	UpdateBattery(battery_level--); //Updates battery UI
 	UpdateClock();
@@ -97,38 +105,17 @@ void loop() {
 	ClearMainScreen();
 	//PlayScale();
   }
-	if (digitalRead(BTN3)) {		//draws BMP
-		analogWrite(PIEZO, HIGH);
-		DrawSprite(bigbidoof, 30, 30);
-
-		//ClearMainScreen();
-		analogWrite(PIEZO, LOW);
-	}
+	//if (digitalRead(BTN3)) {		//draws BMP		
+		
+		//ClearMainScreen();		
+	//}
 
 }
 
 
-void DrawSprite(const tImage sprite, uint8_t x, uint8_t y) {
-
-	int      w, h, pixel, col, imagePixels;
-
-	if ((x >= tft.width()) || (y >= tft.height())) return; //cancels operation if image larger than screen size
-
-	// Crop area to be loaded
-	w = sprite.width; 
-	h = sprite.height;
-	
-	if ((x + w - 1) >= tft.width())  w = tft.width() - x;
-	if ((y + h - 1) >= tft.height()) h = tft.height() - y;
-	imagePixels = w * h;
-	// Set TFT address window to clipped image bounds
-	tft.setAddrWindow(x, y, x + w - 1, y + h - 1); //a bit smaller than image
-
-
-	for (pixel = 0; pixel < imagePixels; pixel++) {
-
-		tft.pushColor(sprite.data[pixel]);
-
-	}
+void setAnimateFlag(void){
+	//ISR for BTN3
+	animateFlag = !animateFlag;
 }
+
 

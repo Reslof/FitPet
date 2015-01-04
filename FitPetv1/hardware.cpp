@@ -1,7 +1,9 @@
 #include "hardware.h"
 
 void writeEEPROM(int deviceaddress, unsigned int eeaddress, char data)
-{
+{	/// <summary>
+	/// Writes byte to EEPROM
+	/// </summary>
 	Wire.beginTransmission(deviceaddress);
 	Wire.write((int)(eeaddress >> 8));   // MSB
 	Wire.write((int)(eeaddress & 0xFF)); // LSB
@@ -12,7 +14,9 @@ void writeEEPROM(int deviceaddress, unsigned int eeaddress, char data)
 }
 
 unsigned char readEEPROM(int deviceaddress, unsigned int eeaddress)
-{
+{	/// <summary>
+	/// Reads byte from EEPROM
+	/// </summary>
 	unsigned char rdata;
 
 	Wire.beginTransmission(deviceaddress);

@@ -51,16 +51,15 @@ extern "C" void __cxa_pure_virtual() {;}
 
 void setup(void);
 //
-void DrawSprite(const tImage sprite, uint8_t x, uint8_t y);
+void setAnimateFlag(void);
 
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\cores\arduino\arduino.h"
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\variants\arduino_due_x\pins_arduino.h" 
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\variants\arduino_due_x\variant.h" 
 #include "C:\Users\User\Programming\FitPet\FitPetv1\FitPetv1.ino"
-#include "C:\Users\User\Programming\FitPet\FitPetv1\bidoof.c"
-#include "C:\Users\User\Programming\FitPet\FitPetv1\bigbidoof.c"
 #include "C:\Users\User\Programming\FitPet\FitPetv1\gui.cpp"
 #include "C:\Users\User\Programming\FitPet\FitPetv1\gui.h"
 #include "C:\Users\User\Programming\FitPet\FitPetv1\hardware.cpp"
 #include "C:\Users\User\Programming\FitPet\FitPetv1\hardware.h"
+#include "C:\Users\User\Programming\FitPet\FitPetv1\loadingIconAnimation.c"
 #endif
