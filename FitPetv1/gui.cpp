@@ -78,6 +78,18 @@ void DebugMessage(char *message){
 		previousLine = 0;
 	}
 }
+
+void DebugMessage(String message){
+	/// <summary>
+	/// Prints text to screen. Automatically wraps around main box
+	/// </summary>
+	tft.setCursor(0, (27 + previousLine));
+	tft.println(message);
+	previousLine += 10;
+	if (previousLine > 100){ //if more than 10 lines printed, start at top again
+		previousLine = 0;
+	}
+}
 void DrawSprite(const tImage sprite, uint8_t x, uint8_t y) {
 	/// <summary>
 	/// Draws a sprite kept in c file. Sprite must be in RGB565 format using LCD Image Converter from http://code.google.com/p/lcd-image-converter/

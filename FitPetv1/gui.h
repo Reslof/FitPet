@@ -24,6 +24,7 @@ static uint8_t conv2d(const char* p);
 //function prototypes
 int initGUI(void);
 void DebugMessage(char *message);
+void DebugMessage(String message);
 void DrawSprite(const tImage sprite, uint8_t x, uint8_t y);
 void LoadingScreenCircles(void);
 void LoadingScreenIcon(void);

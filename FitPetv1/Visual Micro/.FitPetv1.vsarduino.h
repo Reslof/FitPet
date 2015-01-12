@@ -51,6 +51,7 @@ extern "C" void __cxa_pure_virtual() {;}
 
 void setup(void);
 //
+void serialEvent();
 void setAnimateFlag(void);
 
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\cores\arduino\arduino.h"

@@ -31,19 +31,28 @@ int steps = 0;
 int battery_level = 100;
 volatile int animateFlag = 0;
 
+String inputString = "";         // a string to hold incoming data
+boolean stringComplete = false;  // whether the string is complete
+
 void setup(void) {
+
+	Serial.begin(9600);
+	Serial.println("Bluetooth ON");
+
+	Wire.begin();		//initializes I2C bus
+	tft.init();			//initializes TFT
+
+	// reserve 200 bytes for the inputString:
+	inputString.reserve(200);
+
 	unsigned int address = 0;
 
 	SPI.setClockDivider(SPI_CLOCK_DIV2); //sets SPI clock to 24 MHz, fastest possible
 	pinMode(BTN1, INPUT); //set the pinmodes for buttons
 	pinMode(BTN2, INPUT);
 	pinMode(BTN3, INPUT);
-
-	Wire.begin();		//initializes I2C bus
-	tft.init();			//initializes TFT
 	
-	//writeEEPROM(EEPROM, address, 0xFF); //writes test value on EEPROM
-	
+	writeEEPROM(EEPROM, address, 0xFF); //writes test value on EEPROM	
 
   if (!initGUI()){
 	  DebugMessage("GUI init: OK");
@@ -54,7 +63,7 @@ void setup(void) {
   }
   
   attachInterrupt(BTN3, setAnimateFlag, FALLING);
-  
+    
   /*
   if (!SD.begin(SD_CS)) {
 	  DebugMessage("SD init: FAILED");
@@ -107,7 +116,24 @@ void loop() {
 	if (digitalRead(BTN2)) {		//clears screen
 	ClearMainScreen();
 	//PlayScale();
-  }
+
+	 }
+	if (stringComplete) {
+		String clear = "clr\n";
+		String read = "read\n";
+		DebugMessage(inputString);
+		if (inputString.equalsIgnoreCase(clear)){
+			ClearMainScreen();
+		}
+		if (inputString.equalsIgnoreCase(read)){
+
+			unsigned char EEPROMtest = readEEPROM(EEPROM, 0); //reads EEPROM value
+			PrintVariable(EEPROMtest, DEC);
+		}
+		// clear the string:
+		inputString = "";
+		stringComplete = false;
+	}
 	//if (digitalRead(BTN3)) {		//draws BMP		
 		
 		//ClearMainScreen();		
@@ -115,6 +141,19 @@ void loop() {
 
 }
 
+void serialEvent() {
+	while (Serial.available()) {
+		// get the new byte:
+		char inChar = (char)Serial.read();
+		// add it to the inputString:
+		inputString += inChar;
+		// if the incoming character is a newline, set a flag
+		// so the main loop can do something about it:
+		if (inChar == '\n') {
+			stringComplete = true;
+		}
+	}
+}
 
 void setAnimateFlag(void){
 	//ISR for BTN3
