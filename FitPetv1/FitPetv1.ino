@@ -38,7 +38,9 @@
 TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC, TFT_RST);
 int steps = 0;
 int battery_level = 100;
-volatile int animateFlag = 0;
+volatile int animateLoadingFlag = 0;
+volatile int animatePetFlag = 0;
+
 
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
@@ -71,7 +73,9 @@ void setup(void) {
 	  Serial.write("GUI init failed");
   }
   
-  attachInterrupt(BTN3, setAnimateFlag, FALLING);
+  attachInterrupt(BTN3, setAnimateLoadingFlag, FALLING);
+  attachInterrupt(BTN4, setAnimatePetFlag, FALLING);
+
     
   /*
   if (!SD.begin(SD_CS)) {
@@ -82,7 +86,7 @@ void setup(void) {
   else{
 	  DebugMessage("SD init: OK");
   }
-
+  */
   unsigned char EEPROMtest = readEEPROM(EEPROM, address); //reads EEPROM value
 
   if (EEPROMtest == 0xFF){
@@ -91,7 +95,8 @@ void setup(void) {
   else{
 	  DebugMessage("EEPROM init: FAILED");
   }
-  /*
+  
+  /* Some old test code on how to use EEPROM
   unsigned char value = readEEPROM(EEPROM, 0);
 	DebugMessage("Value Read EEPROM: ");
 	PrintVariable(value, HEX);
@@ -107,15 +112,20 @@ void loop() {
 	if (battery_level < 0) {
 		battery_level = 100;
 	}
-	if (animateFlag){
+	if (animateLoadingFlag){
 		analogWrite(PIEZO, HIGH);
 		LoadingScreenIcon();
 		analogWrite(PIEZO, LOW);
 	}
+	if (animatePetFlag){
+		//analogWrite(PIEZO, HIGH);
+		AnimatePet();
+		//analogWrite(PIEZO, LOW);
+	}
 
 	UpdateSteps(steps++);   //Updates steps UI
 	UpdateBattery(battery_level--); //Updates battery UI
-	UpdateClock();
+	UpdateClock();					//Updates clock
 
 	if (digitalRead(BTN1)) {		//prints line to test 
 	analogWrite(PIEZO, HIGH);
@@ -124,13 +134,24 @@ void loop() {
 	}
 	if (digitalRead(BTN2)) {		//clears screen
 	ClearMainScreen();
-	//PlayScale();
 
 	 }
-	if (stringComplete) {
+	if (stringComplete) {		//handles Bluetooth commands!!!! 
 		String clear = "clr\n";
 		String read = "read\n";
+		String loading = "loading\n";
+		String showPet = "pet\n";
+
 		DebugMessage(inputString);
+		if (inputString.equalsIgnoreCase(clear)){
+			ClearMainScreen();
+		}
+		if (inputString.equalsIgnoreCase(loading)){
+			animateLoadingFlag = !animateLoadingFlag;
+		}
+		if (inputString.equalsIgnoreCase(showPet)){
+			animatePetFlag = !animatePetFlag;
+		}
 		if (inputString.equalsIgnoreCase(clear)){
 			ClearMainScreen();
 		}
@@ -143,10 +164,6 @@ void loop() {
 		inputString = "";
 		stringComplete = false;
 	}
-	//if (digitalRead(BTN3)) {		//draws BMP		
-		
-		//ClearMainScreen();		
-	//}
 
 }
 
@@ -164,9 +181,12 @@ void serialEvent() {
 	}
 }
 
-void setAnimateFlag(void){
+void setAnimateLoadingFlag(void){
 	//ISR for BTN3
-	animateFlag = !animateFlag;
+	animateLoadingFlag = !animateLoadingFlag;
 }
-
+void setAnimatePetFlag(void){
+	//ISR for BTN4
+	animatePetFlag = !animatePetFlag;
+}
 

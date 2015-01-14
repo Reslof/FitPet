@@ -52,15 +52,17 @@ extern "C" void __cxa_pure_virtual() {;}
 void setup(void);
 //
 void serialEvent();
-void setAnimateFlag(void);
+void setAnimateLoadingFlag(void);
+void setAnimatePetFlag(void);
 
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\cores\arduino\arduino.h"
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\variants\arduino_due_x\pins_arduino.h" 
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\variants\arduino_due_x\variant.h" 
 #include "F:\Programming\FitPet\FitPetv1\FitPetv1.ino"
+#include "F:\Programming\FitPet\FitPetv1\Animations.c"
+#include "F:\Programming\FitPet\FitPetv1\bidoofAnimation.c"
 #include "F:\Programming\FitPet\FitPetv1\gui.cpp"
 #include "F:\Programming\FitPet\FitPetv1\gui.h"
 #include "F:\Programming\FitPet\FitPetv1\hardware.cpp"
 #include "F:\Programming\FitPet\FitPetv1\hardware.h"
-#include "F:\Programming\FitPet\FitPetv1\loadingIconAnimation.c"
 #endif

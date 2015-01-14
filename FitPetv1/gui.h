@@ -1,5 +1,5 @@
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
-#include "loadingIconAnimation.c"
+#include "Animations.c"
 
 //Hardware constants
 #define SD_CS   7  // Chip select line for SD card
@@ -23,6 +23,7 @@ static uint8_t conv2d(const char* p);
 
 //function prototypes
 int initGUI(void);
+void AnimatePet(void);
 void DebugMessage(char *message);
 void DebugMessage(String message);
 void DrawSprite(const tImage sprite, uint8_t x, uint8_t y);

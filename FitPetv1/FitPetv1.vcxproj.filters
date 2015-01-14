@@ -35,7 +35,7 @@
     <ClCompile Include="hardware.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="loadingIconAnimation.c">
+    <ClCompile Include="Animations.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

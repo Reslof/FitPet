@@ -5,6 +5,35 @@
 uint8_t hh, mm, ss; // Get H, M, S from compile time
 uint8_t previousLine = 0;  //global to keep track of DebugMessage line
 
+void AnimatePet(void){
+	DrawSprite(bidoof_frame_000, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_001, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_002, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_003, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_004, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_005, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_006, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_007, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_008, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_009, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_010, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_011, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+	DrawSprite(bidoof_frame_012, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	delay(15);
+}
+
 void UpdateBattery(int BATTERY_LEVEL) {
 	/// <summary>
 	/// Prints battery level to GUI
@@ -180,23 +209,23 @@ void LoadingScreenIcon(void){
 	/// Displays animated icon in the middle of the screen
 	/// </summary>
 	
-	DrawSprite(frame_000, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_000, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
 	delay(15);
-	DrawSprite(frame_001, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_001, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
 	delay(15);
-	DrawSprite(frame_002, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_002, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
 	delay(15);
-	DrawSprite(frame_003, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_003, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
 	delay(15);
-	DrawSprite(frame_004, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_004, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
 	delay(15);
-	DrawSprite(frame_005, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_005, MIDDLE_MAIN_SCREEN_WIDTH - 225, MIDDLE_MAIN_SCREEN_HEIGHT);
 	delay(15);
-	DrawSprite(frame_006, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_006, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
 	delay(15);
-	DrawSprite(frame_007, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_007, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
 	delay(15);
-	DrawSprite(frame_008, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_008, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
 	delay(15);
 }
 int initGUI(void){
