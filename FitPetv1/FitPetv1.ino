@@ -1,5 +1,5 @@
 /*
-*FitPet v0.5: Holiday Edition
+*FitPet v0.6: Back to School Edition
  
 * TODO:
 - Integrate Accelerometer, RTC
@@ -11,6 +11,10 @@
  More to be added.
 
 *HISTORY:
+1/14/2015
+-Integrated RTC Module. Needs RTCdue library.
+-Fixed bug with EEPROM + RTC on same bus. Accelerometer will now be placed on the Wire bus instead of Wire1.
+
 1/12/2014 0.5
 - Integrated Bluetooth Serial Module. Works great from smartphone, not so much via PC.
 - Updated README.
