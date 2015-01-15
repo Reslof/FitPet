@@ -1,4 +1,5 @@
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
+#include <RTCdue\RTCdue.h>
 #include "Animations.c"
 
 //Hardware constants
@@ -19,7 +20,7 @@
 
 //globals
 extern TFT_S6D02A1 tft;
-static uint8_t conv2d(const char* p);
+extern RTC_DS1307 rtc;
 
 //function prototypes
 int initGUI(void);

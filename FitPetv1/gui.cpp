@@ -51,40 +51,40 @@ void UpdateClock(void) {
 	/// Takes care of the clock for now. Will most likely be removed once RTC is implemented
 	/// </summary>
 
-	if (1) {
-		ss++;              // Advance second
-		if (ss == 60) {
-			ss = 0;
-			mm++;            // Advance minute
-			if (mm > 59) {
-				mm = 0;
-				hh++;          // Advance hour
-				if (hh > 23) {
-					hh = 0;
-				}
-			}
-		}
+	DateTime now = rtc.now(); //Gets time from RTC
+	char *daynightFlag;
 
-		// Update digital time
-		tft.setCursor(34, 138);
+	// Update digital time
+	tft.setCursor(34, 138);
 
-		if (hh > 12) {
-			if (hh < 22) tft.print('0');
-			tft.print(hh - 12);
-		}
-		else {
-			if (hh < 10) tft.print('0');
-			tft.print(hh);
-		}
-		tft.print(':');
-		if (mm < 10) tft.print('0');
-		tft.print(mm);
-		tft.print(':');
-		if (ss < 10) tft.print('0');
-		tft.print(ss);
-		if (hh > 12) tft.print(" pm");
-		else tft.print(" am");
+	if (now.hour() > 13){
+		tft.print(now.hour() - 12, DEC);
+		daynightFlag = " pm";
 	}
+	else{
+		tft.print(now.hour(), DEC);
+		daynightFlag = " am";
+	}
+	
+	tft.print(':');
+	tft.print(now.minute(), DEC);
+	tft.print(':');
+	
+	if (now.second() < 10){
+		tft.print("0");
+	}
+
+	tft.print(now.second(), DEC);
+	tft.print(daynightFlag);
+
+	// Update date
+	tft.setCursor(34, 150);
+
+	tft.print(now.month(), DEC);
+	tft.print('/');
+	tft.print(now.day(), DEC);
+	tft.print('/');
+	tft.print(now.year(), DEC);
 }
 
 void UpdateSteps(int steps_taken) {
@@ -250,10 +250,6 @@ int initGUI(void){
 	//battery
 	tft.setCursor(68, 3);
 	tft.print("Battery: ");
-
-	//time
-	tft.setCursor(34, 150);
-	tft.print(__DATE__);
 	
 	//reset counts
 	UpdateSteps(0);
@@ -261,10 +257,4 @@ int initGUI(void){
 	UpdateClock();
 
 	return 0;
-}
-static uint8_t conv2d(const char* p) {
-	uint8_t v = 0;
-	if ('0' <= *p && *p <= '9')
-		v = *p - '0';
-	return 10 * v + *++p - '0';
 }

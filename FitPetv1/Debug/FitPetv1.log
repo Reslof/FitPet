@@ -1,78 +1,50 @@
-﻿Build started 1/3/2015 9:11:26 PM.
-     1>Project "C:\Users\User\Programming\FitPet\FitPetv1\FitPetv1.vcxproj" on node 2 (Build target(s)).
+﻿Build started 1/14/2015 9:20:56 PM.
+     1>Project "F:\Programming\FitPet\FitPetv1\FitPetv1.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\cores\arduino" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\variants\arduino_due_x" /IC:\Users\User\Documents\Arduino\libraries\Adafruit_GFX /IC:\Users\User\Documents\Arduino\libraries\Adafruit_GFX\utility /IC:\Users\User\Documents\Arduino\libraries\TFT_S6D02A1 /IC:\Users\User\Documents\Arduino\libraries\TFT_S6D02A1\utility /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\libraries\SPI" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\libraries\SPI\utility" /I"C:\Program Files (x86)\Arduino\libraries\SD\src" /I"C:\Program Files (x86)\Arduino\libraries\SD\src\utility" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\libraries\Wire" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\libraries\Wire\utility" /I"C:\Program Files (x86)\Arduino\libraries" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\libraries" /I"C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers" /IC:\Users\User\Documents\Arduino\libraries /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\CMSIS\Device\ATMEL\\" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\libsam" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\libsam\include" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\CMSIS\CMSIS\Include\\" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\CMSIS\CMSIS\Include\\" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\CMSIS\Device\ATMEL\\" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\libsam" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\libsam\include" /I"C:\Program Files (x86)\Arduino/hardware/tools/g++_arm_none_eabi\arm-none-eabi\include" /I"C:\Program Files (x86)\Arduino/hardware/tools/g++_arm_none_eabi\arm_none_eabi\include\\" /I"C:\Program Files (x86)\Arduino/hardware/tools/g++_arm_none_eabi\lib\gcc\arm-none-eabi\4.4.1\include" /I"C:\Program Files (x86)\Arduino/hardware/tools/g++_arm_none_eabi\lib\gcc\arm-none-eabi\4.4.1\include\\" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D __SAM3X8E__ /D USB_VID=0x2341 /D USB_PID=0x003e /D USBCON /D "USB_MANUFACTURER=\"Unknown\"" /D "USB_PRODUCT=\"Arduino Due\"" /D ARDUINO=158 /D ARDUINO_MAIN /D printf=iprintf /D __SAM__ /D __sam__ /D F_CPU=84000000L /D __cplusplus /D _MBCS /X /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /FI"C:\Users\User\Programming\FitPet\FitPetv1\Visual Micro\.FitPetv1.vsarduino.h" /analyze- /errorReport:prompt bidoofAnimation.c bigbidoof.c frame_000.c frame_001.c frame_002.c frame_003.c frame_004.c frame_005.c frame_006.c frame_007.c
-         frame_007.c
-     1>c1 : fatal error C1083: Cannot open source file: 'frame_007.c': No such file or directory
-         frame_006.c
-     1>c1 : fatal error C1083: Cannot open source file: 'frame_006.c': No such file or directory
-         frame_005.c
-     1>c1 : fatal error C1083: Cannot open source file: 'frame_005.c': No such file or directory
-         frame_004.c
-     1>c1 : fatal error C1083: Cannot open source file: 'frame_004.c': No such file or directory
-         frame_003.c
-     1>c1 : fatal error C1083: Cannot open source file: 'frame_003.c': No such file or directory
-         frame_002.c
-     1>c1 : fatal error C1083: Cannot open source file: 'frame_002.c': No such file or directory
-         frame_001.c
-     1>c1 : fatal error C1083: Cannot open source file: 'frame_001.c': No such file or directory
-         frame_000.c
-     1>c1 : fatal error C1083: Cannot open source file: 'frame_000.c': No such file or directory
-         bigbidoof.c
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(13): warning C4005: '__SAM3X8E__' : macro redefinition
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\cores\arduino" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\variants\arduino_due_x" /IC:\Users\Luis\Documents\Arduino\libraries\Adafruit_GFX_Library /IC:\Users\Luis\Documents\Arduino\libraries\Adafruit_GFX_Library\utility /IC:\Users\Luis\Documents\Arduino\libraries\TFT_S6D02A1 /IC:\Users\Luis\Documents\Arduino\libraries\TFT_S6D02A1\utility /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\libraries\SPI" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\libraries\SPI\utility" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\libraries\Wire" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\libraries\Wire\utility" /IC:\Users\Luis\Documents\Arduino\libraries\RTCdue /IC:\Users\Luis\Documents\Arduino\libraries\RTCdue\utility /I"C:\Program Files (x86)\Arduino\libraries" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\libraries" /I"C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers" /IC:\Users\Luis\Documents\Arduino\libraries /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\CMSIS\Device\ATMEL\\" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\libsam" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\libsam\include" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\CMSIS\CMSIS\Include\\" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\CMSIS\CMSIS\Include\\" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\CMSIS\Device\ATMEL\\" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\libsam" /I"C:\Program Files (x86)\Arduino\hardware\arduino\sam\system\libsam\include" /I"C:\Program Files (x86)\Arduino/hardware/tools/g++_arm_none_eabi\arm-none-eabi\include" /I"C:\Program Files (x86)\Arduino/hardware/tools/g++_arm_none_eabi\arm_none_eabi\include\\" /I"C:\Program Files (x86)\Arduino/hardware/tools/g++_arm_none_eabi\lib\gcc\arm-none-eabi\4.4.1\include" /I"C:\Program Files (x86)\Arduino/hardware/tools/g++_arm_none_eabi\lib\gcc\arm-none-eabi\4.4.1\include\\" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D __SAM3X8E__ /D USB_VID=0x2341 /D USB_PID=0x003e /D USBCON /D "USB_MANUFACTURER=\"Unknown\"" /D "USB_PRODUCT=\"Arduino Due\"" /D ARDUINO=158 /D ARDUINO_MAIN /D printf=iprintf /D __SAM__ /D __sam__ /D F_CPU=84000000L /D __cplusplus /D _MBCS /X /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /FI"F:\Programming\FitPet\FitPetv1\Visual Micro\.FitPetv1.vsarduino.h" /analyze- /errorReport:prompt gui.cpp hardware.cpp
+         hardware.cpp
+     1>c1xx : warning C4117: macro name '__cplusplus' is reserved, '#define' ignored
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(13): warning C4005: '__SAM3X8E__' : macro redefinition
                  command-line arguments :  see previous definition of '__SAM3X8E__'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(16): warning C4005: 'USBCON' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(16): warning C4005: 'USBCON' : macro redefinition
                  command-line arguments :  see previous definition of 'USBCON'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(17): warning C4005: 'USB_MANUFACTURER' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(17): warning C4005: 'USB_MANUFACTURER' : macro redefinition
                  command-line arguments :  see previous definition of 'USB_MANUFACTURER'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(18): warning C4005: 'USB_PRODUCT' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(18): warning C4005: 'USB_PRODUCT' : macro redefinition
                  command-line arguments :  see previous definition of 'USB_PRODUCT'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(20): warning C4005: 'ARDUINO_MAIN' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(20): warning C4005: 'ARDUINO_MAIN' : macro redefinition
                  command-line arguments :  see previous definition of 'ARDUINO_MAIN'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(22): warning C4005: '__SAM__' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(22): warning C4005: '__SAM__' : macro redefinition
                  command-line arguments :  see previous definition of '__SAM__'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(23): warning C4005: '__sam__' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(23): warning C4005: '__sam__' : macro redefinition
                  command-line arguments :  see previous definition of '__sam__'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(25): warning C4005: '__cplusplus' : macro redefinition
-                 command-line arguments :  see previous definition of '__cplusplus'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(32): warning C4005: '__asm__' : macro redefinition
-                 c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(27) : see previous definition of '__asm__'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(47): error C2059: syntax error : 'string'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(54): error C2146: syntax error : missing ')' before identifier 'sprite'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(54): error C2061: syntax error : identifier 'sprite'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(54): error C2059: syntax error : ';'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(54): error C2059: syntax error : ','
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(54): error C2059: syntax error : ')'
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(25): warning C4117: macro name '__cplusplus' is reserved, '#define' ignored
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(32): warning C4005: '__asm__' : macro redefinition
+                 f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(27) : see previous definition of '__asm__'
      1>c:\program files (x86)\arduino\hardware\arduino\sam\cores\arduino\arduino.h(23): fatal error C1083: Cannot open include file: 'stdint.h': No such file or directory
-         bidoofAnimation.c
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(13): warning C4005: '__SAM3X8E__' : macro redefinition
+         gui.cpp
+     1>c1xx : warning C4117: macro name '__cplusplus' is reserved, '#define' ignored
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(13): warning C4005: '__SAM3X8E__' : macro redefinition
                  command-line arguments :  see previous definition of '__SAM3X8E__'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(16): warning C4005: 'USBCON' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(16): warning C4005: 'USBCON' : macro redefinition
                  command-line arguments :  see previous definition of 'USBCON'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(17): warning C4005: 'USB_MANUFACTURER' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(17): warning C4005: 'USB_MANUFACTURER' : macro redefinition
                  command-line arguments :  see previous definition of 'USB_MANUFACTURER'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(18): warning C4005: 'USB_PRODUCT' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(18): warning C4005: 'USB_PRODUCT' : macro redefinition
                  command-line arguments :  see previous definition of 'USB_PRODUCT'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(20): warning C4005: 'ARDUINO_MAIN' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(20): warning C4005: 'ARDUINO_MAIN' : macro redefinition
                  command-line arguments :  see previous definition of 'ARDUINO_MAIN'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(22): warning C4005: '__SAM__' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(22): warning C4005: '__SAM__' : macro redefinition
                  command-line arguments :  see previous definition of '__SAM__'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(23): warning C4005: '__sam__' : macro redefinition
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(23): warning C4005: '__sam__' : macro redefinition
                  command-line arguments :  see previous definition of '__sam__'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(25): warning C4005: '__cplusplus' : macro redefinition
-                 command-line arguments :  see previous definition of '__cplusplus'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(32): warning C4005: '__asm__' : macro redefinition
-                 c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(27) : see previous definition of '__asm__'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(47): error C2059: syntax error : 'string'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(54): error C2146: syntax error : missing ')' before identifier 'sprite'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(54): error C2061: syntax error : identifier 'sprite'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(54): error C2059: syntax error : ';'
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(54): error C2059: syntax error : ','
-     1>c:\users\user\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(54): error C2059: syntax error : ')'
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(25): warning C4117: macro name '__cplusplus' is reserved, '#define' ignored
+     1>f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(32): warning C4005: '__asm__' : macro redefinition
+                 f:\programming\fitpet\fitpetv1\visual micro\.fitpetv1.vsarduino.h(27) : see previous definition of '__asm__'
      1>c:\program files (x86)\arduino\hardware\arduino\sam\cores\arduino\arduino.h(23): fatal error C1083: Cannot open include file: 'stdint.h': No such file or directory
          Generating Code...
-     1>Done Building Project "C:\Users\User\Programming\FitPet\FitPetv1\FitPetv1.vcxproj" (Build target(s)) -- FAILED.
+     1>Done Building Project "F:\Programming\FitPet\FitPetv1\FitPetv1.vcxproj" (Build target(s)) -- FAILED.
 
 Build FAILED.
 
-Time Elapsed 00:00:01.31
+Time Elapsed 00:00:00.53

@@ -29,18 +29,19 @@
 #include <Adafruit_GFX_Library\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
-#include <SD.h>
-#include <Wire\Wire.h>
+#include <Wire.h>
+#include <RTCdue\RTCdue.h>
 #include "gui.h"
 #include "hardware.h"
 
 //globals
 TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC, TFT_RST);
+RTC_DS1307 rtc;
+
 int steps = 0;
 int battery_level = 100;
 volatile int animateLoadingFlag = 0;
 volatile int animatePetFlag = 0;
-
 
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
@@ -51,6 +52,8 @@ void setup(void) {
 	Serial.println("Bluetooth ON");
 
 	Wire.begin();		//initializes I2C bus
+	rtc.begin();		//initializes RTC
+
 	tft.init();			//initializes TFT
 
 	// reserve 200 bytes for the inputString:
@@ -76,17 +79,8 @@ void setup(void) {
   attachInterrupt(BTN3, setAnimateLoadingFlag, FALLING);
   attachInterrupt(BTN4, setAnimatePetFlag, FALLING);
 
-    
-  /*
-  if (!SD.begin(SD_CS)) {
-	  DebugMessage("SD init: FAILED");
-	  SPI.setClockDivider(SPI_CLOCK_DIV2); //required to speed up TFT SPI clock
-	  return;
-  }
-  else{
-	  DebugMessage("SD init: OK");
-  }
-  */
+  
+  
   unsigned char EEPROMtest = readEEPROM(EEPROM, address); //reads EEPROM value
 
   if (EEPROMtest == 0xFF){
@@ -106,9 +100,22 @@ void setup(void) {
 	DebugMessage("Printing letter A:");
 	PrintVariable(valueA, ASCII); //prints actual ascii letter!
 	*/
+
+  if (!rtc.isrunning()) {
+	  Serial.println("RTC is NOT running!");
+	  delay(2000);
+	  // following line sets the RTC to the date & time this sketch was compiled
+	  rtc.adjust(DateTime(__DATE__, __TIME__));
+  }
+  
+
 }
 
 void loop() {
+	
+
+
+
 	if (battery_level < 0) {
 		battery_level = 100;
 	}
@@ -167,6 +174,7 @@ void loop() {
 
 }
 
+/*
 void serialEvent() {
 	while (Serial.available()) {
 		// get the new byte:
@@ -180,6 +188,7 @@ void serialEvent() {
 		}
 	}
 }
+*/
 
 void setAnimateLoadingFlag(void){
 	//ISR for BTN3

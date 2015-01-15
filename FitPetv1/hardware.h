@@ -1,4 +1,4 @@
-#include <Wire\Wire.h>
+#include <Wire.h>
 
 //Hardware constants
 #define PIEZO   3   //piezzo, pwm output
