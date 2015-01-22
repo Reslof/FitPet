@@ -30,7 +30,7 @@
 - Integrated ClearBMP and many other library functions.
 */
 
-#include <Adafruit_GFX_Library\Adafruit_GFX.h>
+#include <Adafruit_GFX\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -82,8 +82,6 @@ void setup(void) {
   
   attachInterrupt(BTN3, setAnimateLoadingFlag, FALLING);
   attachInterrupt(BTN4, setAnimatePetFlag, FALLING);
-
-  
   
   unsigned char EEPROMtest = readEEPROM(EEPROM, address); //reads EEPROM value
 
@@ -110,16 +108,12 @@ void setup(void) {
 	  delay(2000);
 	  // following line sets the RTC to the date & time this sketch was compiled
 	  rtc.adjust(DateTime(__DATE__, __TIME__));
-  }
-  
+  } 
 
 }
 
 void loop() {
 	
-
-
-
 	if (battery_level < 0) {
 		battery_level = 100;
 	}
@@ -178,7 +172,6 @@ void loop() {
 
 }
 
-/*
 void serialEvent() {
 	while (Serial.available()) {
 		// get the new byte:
@@ -192,7 +185,6 @@ void serialEvent() {
 		}
 	}
 }
-*/
 
 void setAnimateLoadingFlag(void){
 	//ISR for BTN3
