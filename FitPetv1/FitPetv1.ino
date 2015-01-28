@@ -116,8 +116,6 @@ void setup(void) {
 }
 
 void loop() {
-	
-
 
 
 	if (battery_level < 0) {
@@ -178,7 +176,7 @@ void loop() {
 
 }
 
-/*
+
 void serialEvent() {
 	while (Serial.available()) {
 		// get the new byte:
@@ -192,7 +190,7 @@ void serialEvent() {
 		}
 	}
 }
-*/
+
 
 void setAnimateLoadingFlag(void){
 	//ISR for BTN3

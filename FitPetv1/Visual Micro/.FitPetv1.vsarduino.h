@@ -51,6 +51,7 @@ extern "C" void __cxa_pure_virtual() {;}
 
 void setup(void);
 //
+void serialEvent();
 void setAnimateLoadingFlag(void);
 void setAnimatePetFlag(void);
 
