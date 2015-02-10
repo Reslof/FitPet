@@ -33,6 +33,6 @@ void LoadingScreenIcon(void);
 void PrintVariable(unsigned char variable, int representation);
 void UpdateBattery(int BATTERY_LEVEL);
 void UpdateClock(void);
-void UpdateSteps(int STEPS);
+void UpdateSteps(void);
 void ClearMainScreen(void);
 void EraseBMP(int x, int y);

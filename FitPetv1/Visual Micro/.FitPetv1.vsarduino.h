@@ -54,6 +54,13 @@ void setup(void);
 void serialEvent();
 void setAnimateLoadingFlag(void);
 void setAnimatePetFlag(void);
+void readAccelData(int *destination);
+void initMMA8452();
+void MMA8452Standby();
+void MMA8452Active();
+void readRegisters(byte addressToRead, int bytesToRead, byte * dest);
+byte readRegister(byte addressToRead);
+void writeRegister(byte addressToWrite, byte dataToWrite);
 
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\cores\arduino\arduino.h"
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\variants\arduino_due_x\pins_arduino.h" 

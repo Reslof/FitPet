@@ -4,6 +4,7 @@
 
 uint8_t hh, mm, ss; // Get H, M, S from compile time
 uint8_t previousLine = 0;  //global to keep track of DebugMessage line
+uint32_t stepsTaken = 0;
 
 void AnimatePet(void){
 	DrawSprite(bidoof_frame_000, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
@@ -87,13 +88,13 @@ void UpdateClock(void) {
 	tft.print(now.year(), DEC);
 }
 
-void UpdateSteps(int steps_taken) {
+void UpdateSteps(void) {
 	/// <summary>
 	/// Prints steps_taken to GUI.
 	/// </summary>
 	//probably need to add code to fetch value from EEPROM once its integrated
 	tft.setCursor(3, 15);
-	tft.print(steps_taken);
+	tft.print(stepsTaken++);
 }
 
 void DebugMessage(char *message){
@@ -252,7 +253,7 @@ int initGUI(void){
 	tft.print("Battery: ");
 	
 	//reset counts
-	UpdateSteps(0);
+	UpdateSteps();
 	UpdateBattery(100);
 	UpdateClock();
 
