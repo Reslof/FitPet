@@ -30,7 +30,7 @@
 - Integrated ClearBMP and many other library functions.
 */
 
-#include <Adafruit_GFX_Library\Adafruit_GFX.h>
+#include <Adafruit_GFX\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -45,7 +45,7 @@ RTC_DS1307 rtc;
 int steps = 0;
 int battery_level = 100;
 volatile int animateLoadingFlag = 0;
-volatile int animatePetFlag = 0;
+volatile int menuFlag = 0;
 
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
@@ -82,7 +82,7 @@ void setup(void) {
   }
   
   attachInterrupt(BTN3, setAnimateLoadingFlag, FALLING);
-  attachInterrupt(BTN4, setAnimatePetFlag, FALLING);
+  attachInterrupt(BTN4, setMenuFlag, FALLING);
 
   
   
@@ -163,9 +163,10 @@ void loop() {
 		LoadingScreenIcon();
 		analogWrite(PIEZO, LOW);
 	}
-	if (animatePetFlag){
+	if (menuFlag){
 		//analogWrite(PIEZO, HIGH);
-		AnimatePet();
+		displayMenu();
+		menuFlag = 0;
 		//analogWrite(PIEZO, LOW);
 	}
 
@@ -196,7 +197,7 @@ void loop() {
 			animateLoadingFlag = !animateLoadingFlag;
 		}
 		if (inputString.equalsIgnoreCase(showPet)){
-			animatePetFlag = !animatePetFlag;
+			menuFlag = !menuFlag;
 		}
 		if (inputString.equalsIgnoreCase(clear)){
 			ClearMainScreen();
@@ -233,9 +234,9 @@ void setAnimateLoadingFlag(void){
 	//ISR for BTN3
 	animateLoadingFlag = !animateLoadingFlag;
 }
-void setAnimatePetFlag(void){
+void setMenuFlag(void){
 	//ISR for BTN4
-	animatePetFlag = !animatePetFlag;
+	menuFlag = !menuFlag;
 }
 
 

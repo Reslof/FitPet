@@ -259,3 +259,21 @@ int initGUI(void){
 
 	return 0;
 }
+
+void displayMenu(void){
+
+	DebugMessage("Pet Menu");
+	DebugMessage("Interact Menu");
+	DebugMessage("Stats");
+	DebugMessage("Action Cost");
+
+	
+
+
+
+
+
+
+
+
+}

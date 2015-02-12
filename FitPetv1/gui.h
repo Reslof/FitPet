@@ -36,3 +36,4 @@ void UpdateClock(void);
 void UpdateSteps(void);
 void ClearMainScreen(void);
 void EraseBMP(int x, int y);
+void displayMenu(void);

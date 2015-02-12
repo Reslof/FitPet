@@ -16,6 +16,7 @@
 #define USBCON
 #define USB_MANUFACTURER "\"Unknown\""
 #define USB_PRODUCT "\"Arduino Due\""
+#define _VMDEBUG 1
 #define ARDUINO 158
 #define ARDUINO_MAIN
 #define printf iprintf
@@ -23,6 +24,9 @@
 #define __sam__
 #define F_CPU 84000000L
 #define __cplusplus
+#define GCC_VERSION 40301
+#define ARDUINO_ARCH_SAM
+#define ARDUINO_SAM_DUE
 #define __inline__
 #define __asm__(x)
 #define __extension__
@@ -48,27 +52,27 @@ extern "C" void __cxa_pure_virtual() {;}
 
 
 
-
-void setup(void);
-//
-void serialEvent();
-void setAnimateLoadingFlag(void);
-void setAnimatePetFlag(void);
-void readAccelData(int *destination);
-void initMMA8452();
-void MMA8452Standby();
-void MMA8452Active();
-void readRegisters(byte addressToRead, int bytesToRead, byte * dest);
-byte readRegister(byte addressToRead);
-void writeRegister(byte addressToWrite, byte dataToWrite);
-
-#include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\cores\arduino\arduino.h"
-#include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\variants\arduino_due_x\pins_arduino.h" 
-#include "C:\Program Files (x86)\Arduino\hardware\arduino\sam\variants\arduino_due_x\variant.h" 
-#include "F:\Programming\FitPet\FitPetv1\FitPetv1.ino"
-#include "F:\Programming\FitPet\FitPetv1\Animations.c"
-#include "F:\Programming\FitPet\FitPetv1\gui.cpp"
-#include "F:\Programming\FitPet\FitPetv1\gui.h"
-#include "F:\Programming\FitPet\FitPetv1\hardware.cpp"
-#include "F:\Programming\FitPet\FitPetv1\hardware.h"
+#include <arduino.h>
+#include <pins_arduino.h> 
+#include <variant.h> 
+#undef F
+#define F(string_literal) ((const PROGMEM char *)(string_literal))
+#undef cli
+#define cli()
+#define pgm_read_byte(address_short)
+#define pgm_read_word(address_short)
+#define pgm_read_word2(address_short)
+#define digitalPinToPort(P)
+#define digitalPinToBitMask(P) 
+#define digitalPinToTimer(P)
+#define analogInPinToBit(P)
+#define portOutputRegister(P)
+#define portInputRegister(P)
+#define portModeRegister(P)
+#include <FitPetv1.ino>
+#include <Animations.c>
+#include <gui.cpp>
+#include <gui.h>
+#include <hardware.cpp>
+#include <hardware.h>
 #endif
