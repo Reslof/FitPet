@@ -30,7 +30,7 @@
 - Integrated ClearBMP and many other library functions.
 */
 
-#include <Adafruit_GFX\Adafruit_GFX.h>
+#include <Adafruit_GFX_Library\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -39,7 +39,7 @@
 #include "hardware.h"
 
 //globals
-TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC, TFT_RST);
+TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC);
 RTC_DS1307 rtc;
 
 int steps = 0;
@@ -70,14 +70,16 @@ void setup(void) {
 	pinMode(BTN1, INPUT); //set the pinmodes for buttons
 	pinMode(BTN2, INPUT);
 	pinMode(BTN3, INPUT);
-	
+	pinMode(BTN4, INPUT);
+	pinMode(PIEZO, OUTPUT);
+
 	writeEEPROM(EEPROM, address, 0xFF); //writes test value on EEPROM	
+
 
   if (!initGUI()){
 	  DebugMessage("GUI init: OK");
   }
   else{
-	  DebugMessage("GUI init: FAILED");
 	  Serial.write("GUI init failed");
   }
   
@@ -105,7 +107,7 @@ void setup(void) {
 	DebugMessage("Printing letter A:");
 	PrintVariable(valueA, ASCII); //prints actual ascii letter!
 	*/
-
+  rtc.adjust(DateTime(__DATE__, __TIME__));
   if (!rtc.isrunning()) {
 	  Serial.println("RTC is NOT running!");
 	  delay(2000);
@@ -271,12 +273,14 @@ void initMMA8452()
 	if (c == 0x2A) // WHO_AM_I should always be 0x2A
 	{
 		Serial.println("MMA8452Q is online...");
+		DebugMessage("Accel init: OK");
 	}
 	else
 	{
 		Serial.print("Could not connect to MMA8452Q: 0x");
 		Serial.println(c, HEX);
-		//while (1); // Loop forever if communication doesn't happen
+		DebugMessage("Accel init: FAILED");
+		delay(5000); // Loop forever if communication doesn't happen
 	}
 
 	MMA8452Standby();  // Must be in standby to change registers
