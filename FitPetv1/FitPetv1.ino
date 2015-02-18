@@ -42,7 +42,7 @@
 TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC, TFT_RST);
 RTC_DS1307 rtc;
 
-int steps = 0;
+//int steps = 0;
 int battery_level = 100;
 volatile int animateLoadingFlag = 0;
 volatile int menuFlag = 0;
@@ -77,11 +77,10 @@ void setup(void) {
 	  DebugMessage("GUI init: OK");
   }
   else{
-	  DebugMessage("GUI init: FAILED");
 	  Serial.write("GUI init failed");
   }
   
-  attachInterrupt(BTN3, setAnimateLoadingFlag, FALLING);
+  attachInterrupt(BTN3, setAnimateLoadingFlag, FALLING); //creates flags on falling edge to minimize bouncing
   attachInterrupt(BTN4, setMenuFlag, FALLING);
 
   
