@@ -1,11 +1,11 @@
 #include <Wire.h>
 
 //Hardware constants
-#define PIEZO   3   //piezzo, pwm output
-#define BTN1    4   //button 1, active high
-#define BTN2    5   //button 2, active high
-#define BTN3    22  //button 3, active high
-#define BTN4	24  //button 4, active high
+#define PIEZO   36    //piezzo, pwm output
+#define BTN1    37   //button 1, active high
+#define BTN2    39   //button 2, active high
+#define BTN3    41  //button 3, active high
+#define BTN4	43  //button 4, active high
 #define EEPROM 0x50    //Address of 24LC256 eeprom chip
 
 // The SparkFun breakout board defaults to 1, set to 0 if SA0 jumper on the bottom of the board is set
