@@ -42,10 +42,11 @@ byte MMA8452Q::init(MMA8452Q_Scale fsr, MMA8452Q_ODR odr)
 {
 	scale = fsr; // Haul fsr into our class variable, scale
 	
-	Wire.begin(); // Initialize I2C
+	Wire1.begin(); // Initialize I2C
 	
-	byte c = readRegister(WHO_AM_I);  // Read WHO_AM_I register
+	byte c = registerRead(WHO_AM_I);  // Read WHO_AM_I register
 	
+
 	if (c != 0x2A) // WHO_AM_I should always be 0x2A
 	{
 		return 0;
@@ -75,7 +76,7 @@ void MMA8452Q::read()
 {
 	byte rawData[6];  // x/y/z accel register data stored here
 
-	readRegisters(OUT_X_MSB, rawData, 6);  // Read the six raw data registers into data array
+	registersRead(OUT_X_MSB, rawData, 6);  // Read the six raw data registers into data array
 	
 	x = (rawData[0]<<8 | rawData[1]) >> 4;
 	y = (rawData[2]<<8 | rawData[3]) >> 4;
@@ -90,7 +91,7 @@ void MMA8452Q::read()
 //	returns 0 if no new data is present, or a 1 if new data is available.
 byte MMA8452Q::available()
 {
-	return (readRegister(STATUS) & 0x08) >> 3;
+	return (registerRead(STATUS) & 0x08) >> 3;
 }
 
 // SET FULL-SCALE RANGE
@@ -99,7 +100,7 @@ byte MMA8452Q::available()
 void MMA8452Q::setScale(MMA8452Q_Scale fsr)
 {
 	// Must be in standby mode to make changes!!!
-	byte cfg = readRegister(XYZ_DATA_CFG);
+	byte cfg = registerRead(XYZ_DATA_CFG);
 	cfg &= 0xFC; // Mask out scale bits
 	cfg |= (fsr >> 2);  // Neat trick, see page 22. 00 = 2G, 01 = 4A, 10 = 8G
 	writeRegister(XYZ_DATA_CFG, cfg);
@@ -112,7 +113,7 @@ void MMA8452Q::setScale(MMA8452Q_Scale fsr)
 void MMA8452Q::setODR(MMA8452Q_ODR odr)
 {
 	// Must be in standby mode to make changes!!!
-	byte ctrl = readRegister(CTRL_REG1);
+	byte ctrl = registerRead(CTRL_REG1);
 	ctrl &= 0xCF; // Mask out data rate bits
 	ctrl |= (odr << 3);
 	writeRegister(CTRL_REG1, ctrl);
@@ -164,7 +165,7 @@ void MMA8452Q::setupTap(byte xThs, byte yThs, byte zThs)
 //	lower 7 bits of the PULSE_SRC register.
 byte MMA8452Q::readTap()
 {
-	byte tapStat = readRegister(PULSE_SRC);
+	byte tapStat = registerRead(PULSE_SRC);
 	if (tapStat & 0x80) // Read EA bit to check if a interrupt was generated
 	{
 		return tapStat & 0x7F;
@@ -181,7 +182,7 @@ void MMA8452Q::setupPL()
 	// For more info check out this app note:
 	//	http://cache.freescale.com/files/sensors/doc/app_note/AN4068.pdf
 	// 1. Enable P/L
-	writeRegister(PL_CFG, readRegister(PL_CFG) | 0x40); // Set PL_EN (enable)
+	writeRegister(PL_CFG, registerRead(PL_CFG) | 0x40); // Set PL_EN (enable)
 	// 2. Set the debounce rate
 	writeRegister(PL_COUNT, 0x50);  // Debounce counter at 100ms (at 800 hz)
 }
@@ -192,7 +193,7 @@ void MMA8452Q::setupPL()
 //	or LOCKOUT. LOCKOUT indicates that the sensor is in neither p or ls.
 byte MMA8452Q::readPL()
 {
-	byte plStat = readRegister(PL_STATUS);
+	byte plStat = registerRead(PL_STATUS);
 	
 	if (plStat & 0x40) // Z-tilt lockout
 		return LOCKOUT;
@@ -204,7 +205,7 @@ byte MMA8452Q::readPL()
 //	Sets the MMA8452 to standby mode. It must be in standby to change most register settings
 void MMA8452Q::standby()
 {
-	byte c = readRegister(CTRL_REG1);
+	byte c = registerRead(CTRL_REG1);
 	writeRegister(CTRL_REG1, c & ~(0x01)); //Clear the active bit to go into standby
 }
 
@@ -212,7 +213,7 @@ void MMA8452Q::standby()
 //	Sets the MMA8452 to active mode. Needs to be in this mode to output data
 void MMA8452Q::active()
 {
-	byte c = readRegister(CTRL_REG1);
+	byte c = registerRead(CTRL_REG1);
 	writeRegister(CTRL_REG1, c | 0x01); //Set the active bit to begin detection
 }
 
@@ -228,41 +229,29 @@ void MMA8452Q::writeRegister(MMA8452Q_Register reg, byte data)
 //	auto-incrmenting to the next.
 void MMA8452Q::writeRegisters(MMA8452Q_Register reg, byte *buffer, byte len)
 {
-	Wire.beginTransmission(address);
-	Wire.write(reg);
+	Wire1.beginTransmission(address);
+	Wire1.write(reg);
 	for (int x = 0; x < len; x++)
-		Wire.write(buffer[x]);
-	Wire.endTransmission(); //Stop transmitting
+		Wire1.write(buffer[x]);
+	Wire1.endTransmission(); //Stop transmitting
 }
 
-// READ A SINGLE REGISTER
-//	Read a byte from the MMA8452Q register "reg".
-byte MMA8452Q::readRegister(MMA8452Q_Register reg)
-{
-	Wire.beginTransmission(address);
-	Wire.write(reg);
-	Wire.endTransmission(false); //endTransmission but keep the connection active
 
-	Wire.requestFrom(address, (byte) 1); //Ask for 1 byte, once done, bus is released by default
+byte MMA8452Q::registerRead(byte address) {
+    Wire1.requestFrom(MMA8452Q_ADDRESS, 1, address, 1);
 
-	while(!Wire.available()) ; //Wait for the data to come back
 
-	return Wire.read(); //Return this one byte
+    while (!Wire1.available());
+    return Wire1.read();
 }
 
-// READ MULTIPLE REGISTERS
-//	Read "len" bytes from the MMA8452Q, starting at register "reg". Bytes are stored
-//	in "buffer" on exit.
-void MMA8452Q::readRegisters(MMA8452Q_Register reg, byte *buffer, byte len)
-{
-	Wire.beginTransmission(address);
-	Wire.write(reg);
-	Wire.endTransmission(false); //endTransmission but keep the connection active
+void MMA8452Q::registersRead(byte address, byte data[], byte count) {
 
-	Wire.requestFrom(address, len); //Ask for bytes, once done, bus is released by default
+    Wire1.requestFrom(MMA8452Q_ADDRESS, count, address, 1);
 
-	while(Wire.available() < len); //Hang out until we get the # of bytes we expect
 
-	for(int x = 0 ; x < len ; x++)
-		buffer[x] = Wire.read();    
+    while (Wire1.available() < count);
+
+    for (size_t i = 0; i < count; i++)
+        data[i] = Wire1.read();
 }

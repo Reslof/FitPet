@@ -23,6 +23,7 @@ Distributed as-is; no warranty is given.
 
 #include <Arduino.h>
 
+
 ///////////////////////////////////
 // MMA8452Q Register Definitions //
 ///////////////////////////////////
@@ -83,6 +84,7 @@ enum MMA8452Q_ODR {ODR_800, ODR_400, ODR_200, ODR_100, ODR_50, ODR_12, ODR_6, OD
 #define LANDSCAPE_L 3
 #define LOCKOUT 0x40
 
+#define MMA8452Q_ADDRESS 0x1D
 ////////////////////////////////
 // MMA8452Q Class Declaration //
 ////////////////////////////////
@@ -111,8 +113,9 @@ private:
 	void setODR(MMA8452Q_ODR odr);
 	void writeRegister(MMA8452Q_Register reg, byte data);
     void writeRegisters(MMA8452Q_Register reg, byte *buffer, byte len);
-	byte readRegister(MMA8452Q_Register reg);
-    void readRegisters(MMA8452Q_Register reg, byte *buffer, byte len);
+
+    byte registerRead(byte addr);
+    void registersRead(byte addr, byte data[], byte count); 
 };
 
 #endif
