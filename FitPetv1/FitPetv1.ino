@@ -166,7 +166,6 @@ void loop() {
 	if (menuFlag){
 		//analogWrite(PIEZO, HIGH);
 		displayMenu();
-		menuFlag = 0;
 		//analogWrite(PIEZO, LOW);
 	}
 
@@ -235,8 +234,17 @@ void setAnimateLoadingFlag(void){
 	animateLoadingFlag = !animateLoadingFlag;
 }
 void setMenuFlag(void){
-	//ISR for BTN4
+
 	menuFlag = !menuFlag;
+
+	if (menuFlag == 0){
+		ClearMainScreen();
+	}
+
+
+	displayMenu();
+	
+
 }
 
 
