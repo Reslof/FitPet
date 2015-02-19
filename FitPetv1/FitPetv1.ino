@@ -30,7 +30,7 @@
 - Integrated ClearBMP and many other library functions.
 */
 
-#include <Adafruit_GFX_Library\Adafruit_GFX.h>
+#include <Adafruit_GFX\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
 #include <Wire.h>
