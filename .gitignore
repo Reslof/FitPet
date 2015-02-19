@@ -191,3 +191,11 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+*.sdf
+FitPetv1/Visual Micro/.FitPetv1.vsarduino.h
+FitPetv1/Visual Micro/.FitPetv1.vsarduino.h
+FitPetv1/Visual Micro/Compile.vmps.xml
+*.xml
+*.filters
+*.suo
+*.sdf

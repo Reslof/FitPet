@@ -58,7 +58,7 @@ void UpdateClock(void) {
 	// Update digital time
 	tft.setCursor(34, 138);
 
-	if (now.hour() > 13){
+	if (now.hour() > 12){
 		tft.print(now.hour() - 12, DEC);
 		daynightFlag = " pm";
 	}

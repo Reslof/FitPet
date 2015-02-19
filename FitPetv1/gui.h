@@ -3,10 +3,9 @@
 #include "Animations.c"
 
 //Hardware constants
-#define SD_CS   7  // Chip select line for SD card
-#define TFT_CS  9  // Chip select line for TFT display
-#define TFT_DC  8  // Data/command line for TFT
-#define TFT_RST 6  // Reset line for TFT (or connect to +5V)
+#define TFT_CS  38  // Chip select line for TFT display
+#define TFT_DC  40  // Data/command line for TFT
+
 #define ASCII 0		//PrintVariable option
 #define HEX 16		//PrintVariable option
 //GUI variables
