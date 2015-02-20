@@ -22,3 +22,11 @@
 //function prototypes
 void writeEEPROM(int deviceaddress, unsigned int eeaddress, char data);
 unsigned char readEEPROM(int deviceaddress, unsigned int eeaddress);
+void readAccelData(int *destination);
+void initMMA8452();
+void MMA8452Standby();
+void MMA8452Active();
+void readRegisters(byte addressToRead, int bytesToRead, byte * dest);
+byte readRegister(byte addressToRead);
+void writeRegister(byte addressToWrite, byte dataToWrite);
+void UpdateAccel(void);
