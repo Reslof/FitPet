@@ -30,7 +30,7 @@
 - Integrated ClearBMP and many other library functions.
 */
 
-#include <Adafruit_GFX_Library\Adafruit_GFX.h>
+#include <Adafruit_GFX\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -44,7 +44,7 @@ RTC_DS1307 rtc;
 
 //int steps = 0;
 int battery_level = 100;
-volatile int animateLoadingFlag = 0;
+volatile int animatePetFlag = 0;
 volatile int menuFlag = 0;
 
 String inputString = "";         // a string to hold incoming data
@@ -83,7 +83,7 @@ void setup(void) {
 	  Serial.write("GUI init failed");
   }
   
-  attachInterrupt(BTN3, setAnimateLoadingFlag, FALLING); //creates flags on falling edge to minimize bouncing
+  attachInterrupt(BTN3, setAnimatePetFlag, FALLING); //creates flags on falling edge to minimize bouncing
   attachInterrupt(BTN4, setMenuFlag, FALLING);
 
   
@@ -127,10 +127,11 @@ void loop() {
 	if (battery_level < 0) {
 		battery_level = 100;
 	}
-	if (animateLoadingFlag){
-		analogWrite(PIEZO, HIGH);
-		LoadingScreenIcon();
-		analogWrite(PIEZO, LOW);
+	if (animatePetFlag){
+		//analogWrite(PIEZO, HIGH);
+		//LoadingScreenIcon();
+		AnimatePet();
+		//analogWrite(PIEZO, LOW);
 	}
 	if (menuFlag){
 		//analogWrite(PIEZO, HIGH);
@@ -162,7 +163,7 @@ void loop() {
 			ClearMainScreen();
 		}
 		if (inputString.equalsIgnoreCase(loading)){
-			animateLoadingFlag = !animateLoadingFlag;
+			animatePetFlag = !animatePetFlag;
 		}
 		if (inputString.equalsIgnoreCase(showPet)){
 			menuFlag = !menuFlag;
@@ -198,20 +199,20 @@ void serialEvent() {
 }
 
 
-void setAnimateLoadingFlag(void){
+void setAnimatePetFlag(void){
 	//ISR for BTN3
-	animateLoadingFlag = !animateLoadingFlag;
+	animatePetFlag = !animatePetFlag;
 }
 void setMenuFlag(void){
 
 	menuFlag = !menuFlag;
 
-	if (menuFlag == 0){
-		ClearMainScreen();
-	}
+	//if (menuFlag == 0){
+	//	ClearMainScreen();
+	//}
 
 
-	displayMenu();
+	//displayMenu();
 	
 
 }
