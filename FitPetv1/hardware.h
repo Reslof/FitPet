@@ -1,7 +1,7 @@
 #include <Wire.h>
 
 //Hardware constants
-#define PIEZO   36    //piezzo, pwm output
+#define PIEZO   4    //piezzo, pwm output
 #define BTN1    37   //button 1, active high
 #define BTN2    39   //button 2, active high
 #define BTN3    41  //button 3, active high
@@ -29,4 +29,3 @@ void MMA8452Active();
 void readRegisters(byte addressToRead, int bytesToRead, byte * dest);
 byte readRegister(byte addressToRead);
 void writeRegister(byte addressToWrite, byte dataToWrite);
-void UpdateAccel(void);

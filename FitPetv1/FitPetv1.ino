@@ -30,7 +30,7 @@
 - Integrated ClearBMP and many other library functions.
 */
 
-#include <Adafruit_GFX\Adafruit_GFX.h>
+#include <Adafruit_GFX_Library\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -43,16 +43,25 @@ TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC);
 RTC_DS1307 rtc;
 
 //int steps = 0;
+float xcal, ycal, zcal = 0.0;
 int battery_level = 100;
 volatile int animatePetFlag = 0;
 volatile int menuFlag = 0;
+volatile int calibrateFlag = 1;
+
+long previousMillis = 0;        // will store last time LED was updated
+
+// the follow variables is a long because the time, measured in miliseconds,
+// will quickly become a bigger number than can be stored in an int.
+long interval = 500;           // interval at which to blink (milliseconds)
+
 
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 
 void setup(void) {
 
-	Serial.begin(57600);
+	Serial.begin(9600);
 	Serial.println("Bluetooth ON");
 
 	Wire.begin();		//initializes I2C bus
@@ -120,8 +129,16 @@ void setup(void) {
 }
 
 void loop() {
+	float acc;
+	unsigned long currentMillis = millis();
 
-	UpdateAccel();
+	if (currentMillis - previousMillis > interval) {
+		acc = UpdateAccel();
+
+		if (acc > 0.5){
+			UpdateSteps();
+		}
+	}
 
 
 	if (battery_level < 0) {
@@ -207,13 +224,53 @@ void setMenuFlag(void){
 
 	menuFlag = !menuFlag;
 
-	//if (menuFlag == 0){
-	//	ClearMainScreen();
-	//}
+	if (menuFlag == 0){
+		ClearMainScreen();
+	}
 
 
 	//displayMenu();
 	
 
+}
+
+float UpdateAccel(void){
+	int accelCount[3];  // Stores the 12-bit signed value
+	float x, y, z = 0.00;
+	float thresh = 0.5;
+	readAccelData(accelCount);  // Read the x/y/z adc values
+
+	// Now we'll calculate the accleration value into actual g's
+	float accelG[3];  // Stores the real accel value in g's
+	for (int i = 0; i < 3; i++)
+	{
+		accelG[i] = (float)accelCount[i] / ((1 << 12) / (2 * GSCALE)); // get actual g value, this depends on scale being set
+	}
+
+	
+	if (calibrateFlag){
+		Serial.print("Calibrating...");
+		xcal = accelG[0];
+		ycal = accelG[1];
+		zcal = accelG[2];
+		calibrateFlag = 0;
+	}
+
+	
+	x = accelG[0] - xcal;
+	y = accelG[1] - ycal;
+	z = accelG[2] - zcal;
+
+	// Print out values
+	Serial.print(x, 3);  // Print g values
+	Serial.print("\t");  // tabs in between axes
+	Serial.print(y, 3);  // Print g values
+	Serial.print("\t");  // tabs in between axes
+	Serial.print(z, 3);  // Print g values
+	Serial.print("\t");  // tabs in between axes
+	
+	Serial.println();
+
+	return x;
 }
 
