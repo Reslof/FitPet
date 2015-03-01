@@ -33,9 +33,6 @@ void MMA8452Active();
 void readRegisters(byte addressToRead, int bytesToRead, byte * dest);
 byte readRegister(byte addressToRead);
 void writeRegister(byte addressToWrite, byte dataToWrite);
-<<<<<<< HEAD
-void UpdateAccel(void);
+float UpdateAccel(void);
 
 #endif
-=======
->>>>>>> origin/master

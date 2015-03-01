@@ -10,7 +10,6 @@ uint8_t hh, mm, ss; // Get H, M, S from compile time
 uint8_t previousLine = 0;  //global to keep track of DebugMessage line
 uint32_t stepsTaken = 0;
 
-<<<<<<< HEAD
 const tImage * emotions[] = { &happy, &happy_grin, &happy_smile, &heart, &mad, &really_mad, &question, &smile, &sad, &exclamation, &dotdotdot };
 const tImage * Luis[] = { &bidoof_frame_000, &bidoof_frame_001, &bidoof_frame_002, &bidoof_frame_003, &bidoof_frame_004, &bidoof_frame_005, &bidoof_frame_006, &bidoof_frame_007, &bidoof_frame_008, &bidoof_frame_009, &bidoof_frame_010, &bidoof_frame_011, &bidoof_frame_012 };
 const tImage * Eddy[] = { &eddy_frame000, &eddy_frame001, &eddy_frame002, &eddy_frame003, &eddy_frame004, &eddy_frame005, &eddy_frame006, &eddy_frame007, &eddy_frame008, &eddy_frame009, &eddy_frame010, &eddy_frame011, &eddy_frame012, &eddy_frame013, &eddy_frame014, &eddy_frame015, &eddy_frame016, &eddy_frame017 };
@@ -22,12 +21,12 @@ void AnimatePet(int pet){
 	switch (pet){
 	case EDDY:
 		for (int i = 0; i < 18; i++){
-			DrawSprite(Eddy[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			DrawSprite(Eddy[i], MIDDLE_MAIN_SCREEN_WIDTH - 22, MIDDLE_MAIN_SCREEN_HEIGHT + 13);
 			delay(20);
 		}break;
 	case LUIS:
 		for (int i = 0; i < 13; i++){
-			DrawSprite(Luis[i], MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			DrawSprite(Luis[i], MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 			delay(20);
 		}break;
 	case AIDEE:
@@ -44,64 +43,11 @@ void AnimatePet(int pet){
 		Serial.print("Error. Sprite not found");
 		break;
 	}
-	/*
-	if (pet == EDDY){ //dray Shiny Mudkip
-		for (int i = 0; i < 18; i++){
-			DrawSprite(Eddy[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
-			delay(20);
-		}
-	}
-	if (pet == LUIS){
-		for (int i = 0; i < 13; i++){
-			DrawSprite(Luis[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
-			delay(20);
-		}
-	}
-	*/
 }
 
 void DrawExpression(int emotion){
 	//tImage frame = *emotions[emotion];
 	DrawSprite(emotions[emotion], MIDDLE_MAIN_SCREEN_WIDTH - 15, 26);
-=======
-void AnimatePet(void){
-	DrawSprite(eddy_frame000, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame001, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame002, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame003, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame004, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame005, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame006, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame007, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame008, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame009, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame010, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame011, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame012, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame013, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame014, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame015, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame016, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
-	DrawSprite(eddy_frame017, MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT - 10);
-	delay(EDDY_DELAY);
->>>>>>> origin/master
 }
 
 void UpdateBattery(int BATTERY_LEVEL) {
@@ -137,6 +83,9 @@ void UpdateClock(void) {
 	}
 	
 	tft.print(':');
+	if (now.minute() < 10){
+		tft.print("0");
+	}
 	tft.print(now.minute(), DEC);
 	tft.print(':');
 	
@@ -337,14 +286,4 @@ void displayMenu(void){
 	DebugMessage("Interact Menu");
 	DebugMessage("Stats");
 	DebugMessage("Action Cost");
-
-	
-
-
-
-
-
-
-
-
 }
