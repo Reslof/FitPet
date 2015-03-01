@@ -1,4 +1,8 @@
+#ifndef HARDWARE_H
+#define HARDWARE_H
+#ifndef WIRE_H
 #include <Wire.h>
+#endif
 
 //Hardware constants
 #define PIEZO   4    //piezzo, pwm output
@@ -29,3 +33,9 @@ void MMA8452Active();
 void readRegisters(byte addressToRead, int bytesToRead, byte * dest);
 byte readRegister(byte addressToRead);
 void writeRegister(byte addressToWrite, byte dataToWrite);
+<<<<<<< HEAD
+void UpdateAccel(void);
+
+#endif
+=======
+>>>>>>> origin/master
