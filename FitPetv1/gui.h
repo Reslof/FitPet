@@ -21,6 +21,7 @@
 #define GUI_BOX_HEIGHT 25
 #define GUI_BOX_WIDTH 64
 
+#define EDDY_DELAY 20
 //globals
 extern TFT_S6D02A1 tft;
 extern RTC_DS1307 rtc;
