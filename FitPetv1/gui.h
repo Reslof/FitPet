@@ -1,3 +1,6 @@
+#ifndef GUI_H
+#define GUI_H
+
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <RTCdue\RTCdue.h>
 #include "Animations.c"
@@ -8,6 +11,7 @@
 
 #define ASCII 0		//PrintVariable option
 #define HEX 16		//PrintVariable option
+
 //GUI variables
 #define MAIN_SCREEN_WIDTH 128
 #define MAIN_SCREEN_HEIGHT 109
@@ -21,12 +25,35 @@
 extern TFT_S6D02A1 tft;
 extern RTC_DS1307 rtc;
 
+//expressions
+#define HAPPY 0
+#define HAPPY_GRIN 1
+#define HAPPY_SMILE 2
+#define HEART 3
+#define MAD 4
+#define REALLY_MAD 5
+#define QUESTION 6
+#define SMILE 7
+#define SAD 8
+#define EXCLAMATION 9
+#define DOTDOTDOT 10
+
+extern const tImage * emotions[];
+extern const tImage * Luis[];
+extern const tImage * Eddy[];
+
+//pets
+#define LUIS 0
+#define EDDY 1
+#define AIDEE 2
+#define ERIK 3
 //function prototypes
 int initGUI(void);
-void AnimatePet(void);
+void AnimatePet(int);
+void DrawExpression(int);
 void DebugMessage(char *message);
 void DebugMessage(String message);
-void DrawSprite(const tImage sprite, uint8_t x, uint8_t y);
+void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y);
 void LoadingScreenCircles(void);
 void LoadingScreenIcon(void);
 void PrintVariable(unsigned char variable, int representation);
@@ -36,3 +63,5 @@ void UpdateSteps(void);
 void ClearMainScreen(void);
 void EraseBMP(int x, int y);
 void displayMenu(void);
+
+#endif

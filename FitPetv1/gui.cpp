@@ -1,48 +1,67 @@
 #include "gui.h"
 #include "hardware.h"
+#ifndef STDINT_H
 #include <stdint.h>
+
+#endif // !STDINT_H
+
 
 uint8_t hh, mm, ss; // Get H, M, S from compile time
 uint8_t previousLine = 0;  //global to keep track of DebugMessage line
 uint32_t stepsTaken = 0;
 
-void AnimatePet(void){
-	DrawSprite(eddy_frame000, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame001, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame002, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame003, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame004, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame005, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame006, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame007, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame008, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame009, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame010, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame011, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame012, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame013, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame014, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame015, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame016, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
-	DrawSprite(eddy_frame017, MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT);
-	delay(15);
+const tImage * emotions[] = { &happy, &happy_grin, &happy_smile, &heart, &mad, &really_mad, &question, &smile, &sad, &exclamation, &dotdotdot };
+const tImage * Luis[] = { &bidoof_frame_000, &bidoof_frame_001, &bidoof_frame_002, &bidoof_frame_003, &bidoof_frame_004, &bidoof_frame_005, &bidoof_frame_006, &bidoof_frame_007, &bidoof_frame_008, &bidoof_frame_009, &bidoof_frame_010, &bidoof_frame_011, &bidoof_frame_012 };
+const tImage * Eddy[] = { &eddy_frame000, &eddy_frame001, &eddy_frame002, &eddy_frame003, &eddy_frame004, &eddy_frame005, &eddy_frame006, &eddy_frame007, &eddy_frame008, &eddy_frame009, &eddy_frame010, &eddy_frame011, &eddy_frame012, &eddy_frame013, &eddy_frame014, &eddy_frame015, &eddy_frame016, &eddy_frame017 };
+
+
+
+void AnimatePet(int pet){
+
+	switch (pet){
+	case EDDY:
+		for (int i = 0; i < 18; i++){
+			DrawSprite(Eddy[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			delay(20);
+		}break;
+	case LUIS:
+		for (int i = 0; i < 13; i++){
+			DrawSprite(Luis[i], MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			delay(20);
+		}break;
+	case AIDEE:
+		for (int i = 0; i < 13; i++){
+			DrawSprite(Luis[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			delay(20);
+		}break;
+	case ERIK:
+		for (int i = 0; i < 13; i++){
+			DrawSprite(Luis[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			delay(20);
+		}break;
+	default:
+		Serial.print("Error. Sprite not found");
+		break;
+	}
+	/*
+	if (pet == EDDY){ //dray Shiny Mudkip
+		for (int i = 0; i < 18; i++){
+			DrawSprite(Eddy[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			delay(20);
+		}
+	}
+	if (pet == LUIS){
+		for (int i = 0; i < 13; i++){
+			DrawSprite(Luis[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			delay(20);
+		}
+	}
+	*/
+}
+
+void DrawExpression(int emotion){
+	//tImage frame = *emotions[emotion];
+	DrawSprite(emotions[emotion], MIDDLE_MAIN_SCREEN_WIDTH - 15, 26);
 }
 
 void UpdateBattery(int BATTERY_LEVEL) {
@@ -130,19 +149,20 @@ void DebugMessage(String message){
 		previousLine = 0;
 	}
 }
-void DrawSprite(const tImage sprite, uint8_t x, uint8_t y) {
+void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y) {
 	/// <summary>
 	/// Draws a sprite kept in c file. Sprite must be in RGB565 format using LCD Image Converter from http://code.google.com/p/lcd-image-converter/
 	/// </summary>
 
 	//NOTE: Image appears messed up if width or height do not fit on screen. Does not crop automatically.
 	int w, h, pixel, col, imagePixels;
+	
 
 	if ((x >= tft.width()) || (y >= tft.height())) return; //cancels operation if image larger than screen size
 
 	// Crop area to be loaded
-	w = sprite.width;
-	h = sprite.height;
+	w = sprite->width;
+	h = sprite->height;
 	if ((x + w - 1) >= tft.width())  w = tft.width() - x;
 	if ((y + h - 1) >= tft.height()) h = tft.height() - y;
 
@@ -153,7 +173,7 @@ void DrawSprite(const tImage sprite, uint8_t x, uint8_t y) {
 
 	for (pixel = 0; pixel < imagePixels; pixel++) {
 		//draws each pixel
-		tft.pushColor(sprite.data[pixel]);
+		tft.pushColor(sprite->data[pixel]);
 	}
 }
 void PrintVariable(unsigned char variable, int representation){
@@ -219,25 +239,26 @@ void LoadingScreenIcon(void){
 	/// <summary>
 	/// Displays animated icon in the middle of the screen
 	/// </summary>
-	
-	DrawSprite(loading_frame_000, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
+	/*
+	DrawSprite(loading_frame_000, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 	delay(15);
-	DrawSprite(loading_frame_001, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_001, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 	delay(15);
-	DrawSprite(loading_frame_002, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_002, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 	delay(15);
-	DrawSprite(loading_frame_003, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_003, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 	delay(15);
-	DrawSprite(loading_frame_004, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_004, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 	delay(15);
-	DrawSprite(loading_frame_005, MIDDLE_MAIN_SCREEN_WIDTH - 225, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_005, MIDDLE_MAIN_SCREEN_WIDTH - 225, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 	delay(15);
-	DrawSprite(loading_frame_006, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_006, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 	delay(15);
-	DrawSprite(loading_frame_007, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_007, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 	delay(15);
-	DrawSprite(loading_frame_008, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT);
+	DrawSprite(loading_frame_008, MIDDLE_MAIN_SCREEN_WIDTH - 25, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 	delay(15);
+	*/
 }
 int initGUI(void){
 	/// <summary>

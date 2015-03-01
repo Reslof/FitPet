@@ -1,4 +1,8 @@
+#ifndef HARDWARE_H
+#define HARDWARE_H
+#ifndef WIRE_H
 #include <Wire.h>
+#endif
 
 //Hardware constants
 #define PIEZO   36    //piezzo, pwm output
@@ -30,3 +34,5 @@ void readRegisters(byte addressToRead, int bytesToRead, byte * dest);
 byte readRegister(byte addressToRead);
 void writeRegister(byte addressToWrite, byte dataToWrite);
 void UpdateAccel(void);
+
+#endif

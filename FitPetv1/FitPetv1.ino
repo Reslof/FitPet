@@ -116,11 +116,9 @@ void setup(void) {
   }
   
   initMMA8452(); //Test and intialize the MMA8452
-
 }
 
 void loop() {
-
 	UpdateAccel();
 
 
@@ -130,7 +128,15 @@ void loop() {
 	if (animatePetFlag){
 		//analogWrite(PIEZO, HIGH);
 		//LoadingScreenIcon();
-		AnimatePet();
+		AnimatePet(LUIS);
+		DrawExpression(HAPPY);
+		delay(1000);
+		ClearMainScreen();
+		AnimatePet(EDDY);
+		DrawExpression(HAPPY_GRIN);
+		delay(1000);
+		ClearMainScreen();
+
 		//analogWrite(PIEZO, LOW);
 	}
 	if (menuFlag){
@@ -140,7 +146,7 @@ void loop() {
 	}
 
 	//UpdateSteps(steps++);   //Updates steps UI
-	UpdateBattery(battery_level--); //Updates battery UI
+	//UpdateBattery(battery_level--); //Updates battery UI
 	UpdateClock();					//Updates clock
 
 	if (digitalRead(BTN1)) {		//prints line to test 

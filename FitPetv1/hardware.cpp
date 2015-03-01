@@ -1,4 +1,5 @@
 #include "hardware.h"
+#include "gui.h"
 
 void writeEEPROM(int deviceaddress, unsigned int eeaddress, char data)
 {	/// <summary>
@@ -63,10 +64,12 @@ void initMMA8452()
 	if (c == 0x2A) // WHO_AM_I should always be 0x2A
 	{
 		Serial.println("MMA8452Q is online...");
+		DebugMessage("Accel init: OK");
 	}
 	else
 	{
 		Serial.print("Could not connect to MMA8452Q: 0x");
+		DebugMessage("Accel: FAILED");
 		Serial.println(c, HEX);
 		while (1); // Loop forever if communication doesn't happen
 	}
