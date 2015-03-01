@@ -1,3 +1,4 @@
+#if INCLUDE_SPRITES
 #include <stdint.h>
 
  typedef struct {
@@ -2371,3 +2372,6 @@ static const uint16_t image_data_smile[780] = {
 const tImage smile = { image_data_smile, 30, 26 };
 
 //=========================================================================================================
+
+
+#endif

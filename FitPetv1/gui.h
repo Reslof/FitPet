@@ -1,5 +1,9 @@
+#define INCLUDE_SPRITES 0 //CHANGE THIS VALUE TO 1 IN ORDER TO USE SPRITES
+
 #ifndef GUI_H
 #define GUI_H
+
+
 
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <RTCdue\RTCdue.h>
@@ -39,22 +43,30 @@ extern RTC_DS1307 rtc;
 #define EXCLAMATION 9
 #define DOTDOTDOT 10
 
-extern const tImage * emotions[];
-extern const tImage * Luis[];
-extern const tImage * Eddy[];
-
 //pets
 #define LUIS 0
 #define EDDY 1
 #define AIDEE 2
 #define ERIK 3
 //function prototypes
-int initGUI(void);
+
+#if INCLUDE_SPRITES
+
+extern const tImage * emotions[];
+extern const tImage * Luis[];
+extern const tImage * Eddy[];
+
 void AnimatePet(int);
 void DrawExpression(int);
+void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y);
+
+#endif
+
+
+
+int initGUI(void);
 void DebugMessage(char *message);
 void DebugMessage(String message);
-void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y);
 void LoadingScreenCircles(void);
 void LoadingScreenIcon(void);
 void PrintVariable(unsigned char variable, int representation);
@@ -64,5 +76,5 @@ void UpdateSteps(void);
 void ClearMainScreen(void);
 void EraseBMP(int x, int y);
 void displayMenu(void);
-
+void DrawMenuItem(char * item, int BG_COLOR);
 #endif

@@ -1,21 +1,19 @@
 #include "gui.h"
 #include "hardware.h"
-#ifndef STDINT_H
 #include <stdint.h>
-
-#endif // !STDINT_H
 
 
 uint8_t hh, mm, ss; // Get H, M, S from compile time
 uint8_t previousLine = 0;  //global to keep track of DebugMessage line
 uint32_t stepsTaken = 0;
 
+#if INCLUDE_SPRITES
+
 const tImage * emotions[] = { &happy, &happy_grin, &happy_smile, &heart, &mad, &really_mad, &question, &smile, &sad, &exclamation, &dotdotdot };
 const tImage * Luis[] = { &bidoof_frame_000, &bidoof_frame_001, &bidoof_frame_002, &bidoof_frame_003, &bidoof_frame_004, &bidoof_frame_005, &bidoof_frame_006, &bidoof_frame_007, &bidoof_frame_008, &bidoof_frame_009, &bidoof_frame_010, &bidoof_frame_011, &bidoof_frame_012 };
 const tImage * Eddy[] = { &eddy_frame000, &eddy_frame001, &eddy_frame002, &eddy_frame003, &eddy_frame004, &eddy_frame005, &eddy_frame006, &eddy_frame007, &eddy_frame008, &eddy_frame009, &eddy_frame010, &eddy_frame011, &eddy_frame012, &eddy_frame013, &eddy_frame014, &eddy_frame015, &eddy_frame016, &eddy_frame017 };
-
-
-
+#endif
+#if INCLUDE_SPRITES
 void AnimatePet(int pet){
 
 	switch (pet){
@@ -49,6 +47,36 @@ void DrawExpression(int emotion){
 	//tImage frame = *emotions[emotion];
 	DrawSprite(emotions[emotion], MIDDLE_MAIN_SCREEN_WIDTH - 15, 26);
 }
+
+
+void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y) {
+	/// <summary>
+	/// Draws a sprite kept in c file. Sprite must be in RGB565 format using LCD Image Converter from http://code.google.com/p/lcd-image-converter/
+	/// </summary>
+
+	//NOTE: Image appears messed up if width or height do not fit on screen. Does not crop automatically.
+	int w, h, pixel, col, imagePixels;
+
+
+	if ((x >= tft.width()) || (y >= tft.height())) return; //cancels operation if image larger than screen size
+
+	// Crop area to be loaded
+	w = sprite->width;
+	h = sprite->height;
+	if ((x + w - 1) >= tft.width())  w = tft.width() - x;
+	if ((y + h - 1) >= tft.height()) h = tft.height() - y;
+
+	imagePixels = w * h;
+
+	// Set TFT address window to clipped image bounds
+	tft.setAddrWindow(x, y, x + w - 1, y + h - 1); //a bit smaller than image
+
+	for (pixel = 0; pixel < imagePixels; pixel++) {
+		//draws each pixel
+		tft.pushColor(sprite->data[pixel]);
+	}
+}
+#endif
 
 void UpdateBattery(int BATTERY_LEVEL) {
 	/// <summary>
@@ -136,33 +164,6 @@ void DebugMessage(String message){
 	previousLine += 10;
 	if (previousLine > 100){ //if more than 10 lines printed, start at top again
 		previousLine = 0;
-	}
-}
-void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y) {
-	/// <summary>
-	/// Draws a sprite kept in c file. Sprite must be in RGB565 format using LCD Image Converter from http://code.google.com/p/lcd-image-converter/
-	/// </summary>
-
-	//NOTE: Image appears messed up if width or height do not fit on screen. Does not crop automatically.
-	int w, h, pixel, col, imagePixels;
-	
-
-	if ((x >= tft.width()) || (y >= tft.height())) return; //cancels operation if image larger than screen size
-
-	// Crop area to be loaded
-	w = sprite->width;
-	h = sprite->height;
-	if ((x + w - 1) >= tft.width())  w = tft.width() - x;
-	if ((y + h - 1) >= tft.height()) h = tft.height() - y;
-
-	imagePixels = w * h;
-
-	// Set TFT address window to clipped image bounds
-	tft.setAddrWindow(x, y, x + w - 1, y + h - 1); //a bit smaller than image
-
-	for (pixel = 0; pixel < imagePixels; pixel++) {
-		//draws each pixel
-		tft.pushColor(sprite->data[pixel]);
 	}
 }
 void PrintVariable(unsigned char variable, int representation){
@@ -281,9 +282,26 @@ int initGUI(void){
 }
 
 void displayMenu(void){
-
+	/*
 	DebugMessage("Pet Menu");
 	DebugMessage("Interact Menu");
 	DebugMessage("Stats");
 	DebugMessage("Action Cost");
+	*/
+	DrawMenuItem("Pet Menu", S6D02A1_BLUE);
+	DrawMenuItem("Interact Menu",S6D02A1_BLACK);
+	DrawMenuItem("Stats", S6D02A1_BLACK);
+	DrawMenuItem("Action Cost", S6D02A1_BLACK);
+}
+
+void DrawMenuItem(char * item, int BG_COLOR){// Prints text to screen. Automatically wraps around main box
+
+	tft.setCursor(0, (27 + previousLine));
+	tft.setTextColor(S6D02A1_WHITE, BG_COLOR);
+	tft.println(item);
+	previousLine += 10;
+	if (previousLine > 100){ //if more than 10 lines printed, start at top again
+		previousLine = 0;
+
+	}
 }

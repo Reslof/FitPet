@@ -30,6 +30,7 @@
 - Integrated ClearBMP and many other library functions.
 */
 
+
 #include <Adafruit_GFX\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
@@ -145,8 +146,7 @@ void loop() {
 		battery_level = 100;
 	}
 	if (animatePetFlag){
-		//analogWrite(PIEZO, HIGH);
-		//LoadingScreenIcon();
+#if INCLUDE_SPRITES
 		AnimatePet(LUIS);
 		DrawExpression(HAPPY);
 		delay(1000);
@@ -155,13 +155,12 @@ void loop() {
 		DrawExpression(HAPPY_GRIN);
 		delay(1000);
 		ClearMainScreen();
-
-		//analogWrite(PIEZO, LOW);
+#endif
 	}
 	if (menuFlag){
-		//analogWrite(PIEZO, HIGH);
+		analogWrite(PIEZO, HIGH);
 		displayMenu();
-		//analogWrite(PIEZO, LOW);
+		analogWrite(PIEZO, LOW);
 	}
 
 	//UpdateSteps(steps++);   //Updates steps UI
