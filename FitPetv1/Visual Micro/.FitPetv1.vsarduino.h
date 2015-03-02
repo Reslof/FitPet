@@ -65,4 +65,6 @@ float UpdateAccel(void);
 #include "C:\Users\User\Programming\FitPet\FitPetv1\gui.h"
 #include "C:\Users\User\Programming\FitPet\FitPetv1\hardware.cpp"
 #include "C:\Users\User\Programming\FitPet\FitPetv1\hardware.h"
+#include "C:\Users\User\Programming\FitPet\FitPetv1\menu.cpp"
+#include "C:\Users\User\Programming\FitPet\FitPetv1\menu.h"
 #endif

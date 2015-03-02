@@ -2,18 +2,18 @@
 #include "hardware.h"
 #include <stdint.h>
 
-
 uint8_t hh, mm, ss; // Get H, M, S from compile time
 uint8_t previousLine = 0;  //global to keep track of DebugMessage line
+volatile uint8_t highlightLine = 0;  //global to keep track of DebugMessage line
 uint32_t stepsTaken = 0;
+boolean disableClock = false;
 
 #if INCLUDE_SPRITES
 
 const tImage * emotions[] = { &happy, &happy_grin, &happy_smile, &heart, &mad, &really_mad, &question, &smile, &sad, &exclamation, &dotdotdot };
 const tImage * Luis[] = { &bidoof_frame_000, &bidoof_frame_001, &bidoof_frame_002, &bidoof_frame_003, &bidoof_frame_004, &bidoof_frame_005, &bidoof_frame_006, &bidoof_frame_007, &bidoof_frame_008, &bidoof_frame_009, &bidoof_frame_010, &bidoof_frame_011, &bidoof_frame_012 };
 const tImage * Eddy[] = { &eddy_frame000, &eddy_frame001, &eddy_frame002, &eddy_frame003, &eddy_frame004, &eddy_frame005, &eddy_frame006, &eddy_frame007, &eddy_frame008, &eddy_frame009, &eddy_frame010, &eddy_frame011, &eddy_frame012, &eddy_frame013, &eddy_frame014, &eddy_frame015, &eddy_frame016, &eddy_frame017 };
-#endif
-#if INCLUDE_SPRITES
+
 void AnimatePet(int pet){
 
 	switch (pet){
@@ -94,6 +94,10 @@ void UpdateClock(void) {
 	/// <summary>
 	/// Takes care of the clock for now. Will most likely be removed once RTC is implemented
 	/// </summary>
+
+	//clear area
+	tft.fillRect(0, 135, MAIN_SCREEN_WIDTH, GUI_BOX_HEIGHT, S6D02A1_BLACK);
+	tft.drawRect(0, 135, MAIN_SCREEN_WIDTH, GUI_BOX_HEIGHT, S6D02A1_BLUE);
 
 	DateTime now = rtc.now(); //Gets time from RTC
 	char *daynightFlag;
@@ -276,8 +280,9 @@ int initGUI(void){
 	//reset counts
 	UpdateSteps();
 	UpdateBattery(100);
-	UpdateClock();
-
+	if (!disableClock){
+		UpdateClock();
+	}
 	return 0;
 }
 
@@ -288,20 +293,32 @@ void displayMenu(void){
 	DebugMessage("Stats");
 	DebugMessage("Action Cost");
 	*/
-	DrawMenuItem("Pet Menu", S6D02A1_BLUE);
-	DrawMenuItem("Interact Menu",S6D02A1_BLACK);
-	DrawMenuItem("Stats", S6D02A1_BLACK);
-	DrawMenuItem("Action Cost", S6D02A1_BLACK);
+	DrawMenuItem("Pet Menu");
+	DrawMenuItem("Interact Menu");
+	DrawMenuItem("Stats");
+	DrawMenuItem("Action Cost");
 }
 
 void DrawMenuItem(char * item, int BG_COLOR){// Prints text to screen. Automatically wraps around main box
 
 	tft.setCursor(0, (27 + previousLine));
-	tft.setTextColor(S6D02A1_WHITE, BG_COLOR);
+	if (previousLine == highlightLine){
+		tft.setTextColor(S6D02A1_WHITE, BG_COLOR);
+	}
 	tft.println(item);
 	previousLine += 10;
 	if (previousLine > 100){ //if more than 10 lines printed, start at top again
 		previousLine = 0;
-
 	}
+}
+
+void DrawMenuTitle(char * title, char *subtitle){
+	disableClock = true;
+	tft.fillRect(0, 135, MAIN_SCREEN_WIDTH, GUI_BOX_HEIGHT, S6D02A1_BLACK);
+	tft.drawRect(0, 135, MAIN_SCREEN_WIDTH, GUI_BOX_HEIGHT, S6D02A1_BLUE);
+	tft.setTextColor(S6D02A1_BLUE);
+	tft.setCursor(34, 138);
+	tft.println(title);
+	tft.println(subtitle);
+
 }

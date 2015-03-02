@@ -1,4 +1,4 @@
-#define INCLUDE_SPRITES 0 //CHANGE THIS VALUE TO 1 IN ORDER TO USE SPRITES
+#define INCLUDE_SPRITES 0//CHANGE THIS VALUE TO 1 IN ORDER TO USE SPRITES
 
 #ifndef GUI_H
 #define GUI_H
@@ -29,6 +29,8 @@
 //globals
 extern TFT_S6D02A1 tft;
 extern RTC_DS1307 rtc;
+extern volatile uint8_t highlightLine;
+
 
 //expressions
 #define HAPPY 0
@@ -62,7 +64,7 @@ void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y);
 
 #endif
 
-
+extern boolean disableClock;
 
 int initGUI(void);
 void DebugMessage(char *message);
@@ -76,5 +78,6 @@ void UpdateSteps(void);
 void ClearMainScreen(void);
 void EraseBMP(int x, int y);
 void displayMenu(void);
-void DrawMenuItem(char * item, int BG_COLOR);
+void DrawMenuItem(char * item, int BG_COLOR = S6D02A1_BLACK);
+void DrawMenuTitle(char * title, char *subtitle);
 #endif

@@ -75,12 +75,14 @@
   <ItemGroup>
     <ClInclude Include="gui.h" />
     <ClInclude Include="hardware.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="Visual Micro\.FitPetv1.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gui.cpp" />
     <ClCompile Include="hardware.cpp" />
     <ClCompile Include="Animations.c" />
+    <ClCompile Include="menu.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

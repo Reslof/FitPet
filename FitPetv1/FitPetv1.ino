@@ -30,7 +30,6 @@
 - Integrated ClearBMP and many other library functions.
 */
 
-
 #include <Adafruit_GFX\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
@@ -38,16 +37,20 @@
 #include <RTCdue\RTCdue.h>
 #include "gui.h"
 #include "hardware.h"
+#include "menu.h"
+
 
 //globals
 TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC);
 RTC_DS1307 rtc;
+//menu_select = 1;                    // Select 1st menu item 
 
 //int steps = 0;
 float xcal, ycal, zcal = 0.0;
 int battery_level = 100;
-volatile int animatePetFlag = 0;
-volatile int menuFlag = 0;
+boolean animatePetFlag = false;
+boolean menuFlag = false;
+boolean isMenuDisplayed = false;
 volatile int calibrateFlag = 1;
 
 long previousMillis = 0;        // will store last time LED was updated
@@ -56,9 +59,10 @@ long previousMillis = 0;        // will store last time LED was updated
 // will quickly become a bigger number than can be stored in an int.
 long interval = 500;           // interval at which to blink (milliseconds)
 
-
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
+
+char  menu_select = 1;     // Currently elected menu item
 
 void setup(void) {
 
@@ -95,8 +99,6 @@ void setup(void) {
   
   attachInterrupt(BTN3, setAnimatePetFlag, FALLING); //creates flags on falling edge to minimize bouncing
   attachInterrupt(BTN4, setMenuFlag, FALLING);
-
-  
   
   unsigned char EEPROMtest = readEEPROM(EEPROM, address); //reads EEPROM value
 
@@ -126,11 +128,12 @@ void setup(void) {
   }
   
   initMMA8452(); //Test and intialize the MMA8452
+
+  tftMenuInit();                    // Draw menu
+  tftMenuSelect(menu_select);       // Highlight selected menu item
 }
 
 void loop() {
-	UpdateAccel();
-
 	float acc;
 	unsigned long currentMillis = millis();
 
@@ -157,25 +160,33 @@ void loop() {
 		ClearMainScreen();
 #endif
 	}
-	if (menuFlag){
-		analogWrite(PIEZO, HIGH);
-		displayMenu();
+	if (!disableClock){
+		UpdateClock();					//Updates clock
+	}
+	
+	if (digitalRead(BTN1)) {		//prints line to test 
+		analogWrite(PIEZO, 255);
 		analogWrite(PIEZO, LOW);
 	}
-
-	//UpdateSteps(steps++);   //Updates steps UI
-	//UpdateBattery(battery_level--); //Updates battery UI
-	UpdateClock();					//Updates clock
-
-	if (digitalRead(BTN1)) {		//prints line to test 
-	analogWrite(PIEZO, HIGH);
-	DebugMessage("This is a line");
-	analogWrite(PIEZO, LOW);
-	}
 	if (digitalRead(BTN2)) {		//clears screen
-	ClearMainScreen();
-
+		ClearMainScreen();
 	 }
+	if (digitalRead(BTN3)){
+		menu_func[menu_select]();       // Call the appropriate menu function from array
+		// Note the syntax for doing this
+		delay(2000);
+		initGUI();
+		tftMenuInit();                  // Redraw the Menu
+		tftMenuSelect(menu_select);     // Highlight the current menu item
+	}
+	if (digitalRead(BTN4)){
+		// Down
+		// move down one menu item, if at bottom wrap to top
+		if (menu_select<numMenu) tftMenuSelect(menu_select + 1);
+		else tftMenuSelect(1);
+	}
+
+
 	if (stringComplete) {		//handles Bluetooth commands!!!! 
 		String clear = "clr\n";
 		String read = "read\n";
@@ -207,7 +218,6 @@ void loop() {
 
 }
 
-
 void serialEvent() {
 	while (Serial.available()) {
 		// get the new byte:
@@ -222,22 +232,27 @@ void serialEvent() {
 	}
 }
 
-
 void setAnimatePetFlag(void){
 	//ISR for BTN3
-	animatePetFlag = !animatePetFlag;
-}
-void setMenuFlag(void){
-
-	menuFlag = !menuFlag;
-
-	if (menuFlag == 0){
-		ClearMainScreen();
+	static unsigned long last_interrupt_time = 0;
+	unsigned long interrupt_time = millis();
+	// If interrupts come faster than 200ms, assume it's a bounce and ignore
+	if (interrupt_time - last_interrupt_time > 200)
+	{
+		animatePetFlag = !animatePetFlag;
 	}
+	last_interrupt_time = interrupt_time;
+}
 
-
-	//displayMenu();
-	
+void setMenuFlag(void){
+	static unsigned long last_interrupt_time = 0;
+	unsigned long interrupt_time = millis();
+	// If interrupts come faster than 200ms, assume it's a bounce and ignore
+	if (interrupt_time - last_interrupt_time > 200)
+	{
+		menuFlag = !menuFlag;
+	}
+	last_interrupt_time = interrupt_time;
 
 }
 
@@ -253,7 +268,6 @@ float UpdateAccel(void){
 	{
 		accelG[i] = (float)accelCount[i] / ((1 << 12) / (2 * GSCALE)); // get actual g value, this depends on scale being set
 	}
-
 	
 	if (calibrateFlag){
 		Serial.print("Calibrating...");
@@ -262,7 +276,6 @@ float UpdateAccel(void){
 		zcal = accelG[2];
 		calibrateFlag = 0;
 	}
-
 	
 	x = accelG[0] - xcal;
 	y = accelG[1] - ycal;
