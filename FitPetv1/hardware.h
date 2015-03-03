@@ -24,10 +24,12 @@
 #define GSCALE 2 // Sets full-scale range to +/-2, 4, or 8g. Used to calc real g values.
 
 //function prototypes
+void beep(uint8_t duration);
 void writeEEPROM(int deviceaddress, unsigned int eeaddress, char data);
 unsigned char readEEPROM(int deviceaddress, unsigned int eeaddress);
 void readAccelData(int *destination);
 void initMMA8452();
+byte initEEPROM(void);
 void MMA8452Standby();
 void MMA8452Active();
 void readRegisters(byte addressToRead, int bytesToRead, byte * dest);

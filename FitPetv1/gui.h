@@ -1,4 +1,4 @@
-#define INCLUDE_SPRITES 0//CHANGE THIS VALUE TO 1 IN ORDER TO USE SPRITES
+#define INCLUDE_SPRITES 1//CHANGE THIS VALUE TO 1 IN ORDER TO USE SPRITES
 
 #ifndef GUI_H
 #define GUI_H
@@ -12,7 +12,8 @@
 //Hardware constants
 #define TFT_CS  38  // Chip select line for TFT display
 #define TFT_DC  40  // Data/command line for TFT
-
+#define TFT_RST 36
+#define TFT_BL 3
 #define ASCII 0		//PrintVariable option
 #define HEX 16		//PrintVariable option
 
@@ -57,11 +58,14 @@ extern volatile uint8_t highlightLine;
 extern const tImage * emotions[];
 extern const tImage * Luis[];
 extern const tImage * Eddy[];
+extern const tImage * Erik[];
+extern const tImage * Aidee[];
 
 void AnimatePet(int);
+void DrawPet(int);
 void DrawExpression(int);
 void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y);
-
+void ClearExpression(void);
 #endif
 
 extern boolean disableClock;

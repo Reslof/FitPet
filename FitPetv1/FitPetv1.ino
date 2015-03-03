@@ -30,7 +30,7 @@
 - Integrated ClearBMP and many other library functions.
 */
 
-#include <Adafruit_GFX\Adafruit_GFX.h>
+#include <Adafruit_GFX_Library\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -39,24 +39,25 @@
 #include "hardware.h"
 #include "menu.h"
 
+#define PET 3 //placeholder for pet selected, will be user selectable
 
 //globals
-TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC);
+TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC, TFT_RST);
 RTC_DS1307 rtc;
-//menu_select = 1;                    // Select 1st menu item 
 
-//int steps = 0;
 float xcal, ycal, zcal = 0.0;
 int battery_level = 100;
-boolean animatePetFlag = false;
+boolean animatePetFlag = true;
 boolean menuFlag = false;
 boolean isMenuDisplayed = false;
+boolean updateGUI = true;
+boolean screenON = true;
+boolean TFTBLFlag = true;
+
 volatile int calibrateFlag = 1;
 
 long previousMillis = 0;        // will store last time LED was updated
 
-// the follow variables is a long because the time, measured in miliseconds,
-// will quickly become a bigger number than can be stored in an int.
 long interval = 500;           // interval at which to blink (milliseconds)
 
 String inputString = "";         // a string to hold incoming data
@@ -65,20 +66,8 @@ boolean stringComplete = false;  // whether the string is complete
 char  menu_select = 1;     // Currently elected menu item
 
 void setup(void) {
-
 	Serial.begin(9600);
 	Serial.println("Bluetooth ON");
-
-	Wire.begin();		//initializes I2C bus
-	Wire1.begin();		//initializes I2C bus
-	rtc.begin();		//initializes RTC
-
-	tft.init();			//initializes TFT
-
-	// reserve 200 bytes for the inputString:
-	inputString.reserve(200);
-
-	unsigned int address = 0;
 
 	SPI.setClockDivider(SPI_CLOCK_DIV2); //sets SPI clock to 24 MHz, fastest possible
 	pinMode(BTN1, INPUT); //set the pinmodes for buttons
@@ -86,58 +75,44 @@ void setup(void) {
 	pinMode(BTN3, INPUT);
 	pinMode(BTN4, INPUT);
 	pinMode(PIEZO, OUTPUT);
+	pinMode(TFT_BL, OUTPUT);
 
-	writeEEPROM(EEPROM, address, 0xFF); //writes test value on EEPROM	
+	analogWrite(TFT_BL, 0); //make sure TFT backlight is off
 
+	attachInterrupt(BTN1, setMenuFlag, FALLING); //handles button interrupts
+	attachInterrupt(BTN4, setBLFlag, FALLING);
 
-  if (!initGUI()){
-	  DebugMessage("GUI init: OK");
-  }
-  else{
-	  Serial.write("GUI init failed");
-  }
-  
-  attachInterrupt(BTN3, setAnimatePetFlag, FALLING); //creates flags on falling edge to minimize bouncing
-  attachInterrupt(BTN4, setMenuFlag, FALLING);
-  
-  unsigned char EEPROMtest = readEEPROM(EEPROM, address); //reads EEPROM value
+	Wire.begin();		//initializes I2C bus
+	Wire1.begin();		//initializes I2C bus
+	rtc.begin();		//initializes RTC
 
-  if (EEPROMtest == 0xFF){
-	  DebugMessage("EEPROM init: OK");
-  }
-  else{
-	  DebugMessage("EEPROM init: FAILED");
-  }
-  
-  /* Some old test code on how to use EEPROM
-  unsigned char value = readEEPROM(EEPROM, 0);
-	DebugMessage("Value Read EEPROM: ");
-	PrintVariable(value, HEX);
-	unsigned char letterA = 'A';
-	writeEEPROM(EEPROM, address, letterA);
-	unsigned char valueA = readEEPROM(EEPROM, 0);
-	DebugMessage("Printing letter A:");
-	PrintVariable(valueA, ASCII); //prints actual ascii letter!
-	*/
-  rtc.adjust(DateTime(__DATE__, __TIME__));
-  if (!rtc.isrunning()) {
-	  Serial.println("RTC is NOT running!");
-	  delay(2000);
-	  // following line sets the RTC to the date & time this sketch was compiled
-	  rtc.adjust(DateTime(__DATE__, __TIME__));
-  }
-  
-  initMMA8452(); //Test and intialize the MMA8452
+	tft.init();			//initializes TFT
+	tft.fillScreen(S6D02A1_BLACK);
 
-  tftMenuInit();                    // Draw menu
-  tftMenuSelect(menu_select);       // Highlight selected menu item
+	for (int i = 0; i < 256; i++){ //fade into max max brightness TFT BL
+		analogWrite(TFT_BL, i);
+		delay(5);
+	}
+
+	beep(150);
+	beep(150);
+	beep(150);
+
+	// reserve 200 bytes for the inputString:
+	inputString.reserve(200);
+
+	RunInitTests();		//tests and initializes pheripherals
+
+#if INCLUDE_SPRITES
+	DrawPet(PET);
+#endif
 }
 
 void loop() {
 	float acc;
 	unsigned long currentMillis = millis();
 
-	if (currentMillis - previousMillis > interval) {
+	if (currentMillis - previousMillis > 500) { //early pedometer code
 		acc = UpdateAccel();
 
 		if (acc > 0.5){
@@ -148,74 +123,148 @@ void loop() {
 	if (battery_level < 0) {
 		battery_level = 100;
 	}
-	if (animatePetFlag){
-#if INCLUDE_SPRITES
-		AnimatePet(LUIS);
-		DrawExpression(HAPPY);
-		delay(1000);
-		ClearMainScreen();
-		AnimatePet(EDDY);
-		DrawExpression(HAPPY_GRIN);
-		delay(1000);
-		ClearMainScreen();
-#endif
-	}
+
 	if (!disableClock){
-		UpdateClock();					//Updates clock
+		UpdateClock();					//Updates clock if in Pet context
 	}
 	
-	if (digitalRead(BTN1)) {		//prints line to test 
-		analogWrite(PIEZO, 255);
-		analogWrite(PIEZO, LOW);
-	}
-	if (digitalRead(BTN2)) {		//clears screen
+	if (menuFlag && updateGUI) {		//displays menu if Pet is being shown
 		ClearMainScreen();
-	 }
-	if (digitalRead(BTN3)){
-		menu_func[menu_select]();       // Call the appropriate menu function from array
-		// Note the syntax for doing this
-		delay(2000);
-		initGUI();
 		tftMenuInit();                  // Redraw the Menu
 		tftMenuSelect(menu_select);     // Highlight the current menu item
+		beep(100);
+		updateGUI = false;
 	}
-	if (digitalRead(BTN4)){
+	else if(!menuFlag && !updateGUI){  //displays pet and clears menu		
+		ClearMainScreen();
+		tft.fillRect(1, 136, MAIN_SCREEN_WIDTH-2, GUI_BOX_HEIGHT-2, S6D02A1_BLACK); //clear Clock area
+		initGUI();	//redraws GUI
+		disableClock = false;
+		updateGUI = true;
+		DrawPet(random(0,4));
+	}
+
+	if (digitalRead(BTN2) && menuFlag) {		//does nothing if no menu present
 		// Down
 		// move down one menu item, if at bottom wrap to top
+		beep(100);
 		if (menu_select<numMenu) tftMenuSelect(menu_select + 1);
 		else tftMenuSelect(1);
+		
+	 }
+	if (digitalRead(BTN3)){
+		animatePetFlag = true;
+		if (menuFlag){ //if handling Menu context
+			menu_func[menu_select]();       // Call the appropriate menu function from array
+			delay(1000); //wait a bit
+			initGUI(); //redraw GUI
+			updateGUI = true;
+			animatePetFlag = false;
+		}
+		if (!menuFlag && animatePetFlag){ //if handling Pet context
+			beep(150);
+			ClearMainScreen();
+			AnimatePet(random(0, 4));	//This is Poke Pet action
+			beep(150);
+			DrawExpression(random(0,11)); //get random emotion from being poked
+			delay(1000);
+			ClearExpression();
+		}
+	}
+		
+	if (stringComplete) {		
+		HandleBTCommands();
+	}
+
+}
+
+void setMenuFlag(void){
+	static unsigned long last_interrupt_time = 0;
+	unsigned long interrupt_time = millis();
+	// If interrupts come faster than 200ms, assume it's a bounce and ignore
+	if (interrupt_time - last_interrupt_time > 200)
+	{
+		menuFlag = !menuFlag;
+	}
+	last_interrupt_time = interrupt_time;
+
+}
+
+void setBLFlag(void){
+	static unsigned long last_interrupt_time = 0;
+	unsigned long interrupt_time = millis();
+	// If interrupts come faster than 200ms, assume it's a bounce and ignore
+	if (interrupt_time - last_interrupt_time > 200)
+	{
+		if (screenON){
+			analogWrite(TFT_BL, 0);			
+		}
+		else{
+			analogWrite(TFT_BL, 255); //fade into max max brightness TFT BL
+		}
+		screenON = !screenON;
+	}
+	last_interrupt_time = interrupt_time;
+
+}
+
+void RunInitTests(void){
+
+	if (!initGUI()){
+		DebugMessage("GUI init: OK");
+	}
+	else{
+		Serial.write("GUI init failed");
 	}
 
 
-	if (stringComplete) {		//handles Bluetooth commands!!!! 
-		String clear = "clr\n";
-		String read = "read\n";
-		String loading = "loading\n";
-		String showPet = "pet\n";
-
-		DebugMessage(inputString);
-		if (inputString.equalsIgnoreCase(clear)){
-			ClearMainScreen();
-		}
-		if (inputString.equalsIgnoreCase(loading)){
-			animatePetFlag = !animatePetFlag;
-		}
-		if (inputString.equalsIgnoreCase(showPet)){
-			menuFlag = !menuFlag;
-		}
-		if (inputString.equalsIgnoreCase(clear)){
-			ClearMainScreen();
-		}
-		if (inputString.equalsIgnoreCase(read)){
-
-			unsigned char EEPROMtest = readEEPROM(EEPROM, 0); //reads EEPROM value
-			PrintVariable(EEPROMtest, DEC);
-		}
-		// clear the string:
-		inputString = "";
-		stringComplete = false;
+	if (initEEPROM() == 0xFF){
+		DebugMessage("EEPROM init: OK");
+	}
+	else{
+		DebugMessage("EEPROM init: FAILED");
 	}
 
+	//rtc.adjust(DateTime(__DATE__, __TIME__));
+	if (!rtc.isrunning()) {
+		Serial.println("RTC is NOT running!");
+		delay(2000);
+		// following line sets the RTC to the date & time this sketch was compiled
+		rtc.adjust(DateTime(__DATE__, __TIME__));
+	}
+
+	initMMA8452(); //Test and intialize the MMA8452
+
+	delay(3000); //wait
+	ClearMainScreen();
+}
+void HandleBTCommands(void){//handles Bluetooth commands!!!! 
+	String clear = "clr\n";
+	String read = "read\n";
+	String loading = "loading\n";
+	String showPet = "pet\n";
+
+	DebugMessage(inputString);
+	if (inputString.equalsIgnoreCase(clear)){
+		ClearMainScreen();
+	}
+	if (inputString.equalsIgnoreCase(loading)){
+		animatePetFlag = !animatePetFlag;
+	}
+	if (inputString.equalsIgnoreCase(showPet)){
+		menuFlag = !menuFlag;
+	}
+	if (inputString.equalsIgnoreCase(clear)){
+		ClearMainScreen();
+	}
+	if (inputString.equalsIgnoreCase(read)){
+
+		unsigned char EEPROMtest = readEEPROM(EEPROM, 0); //reads EEPROM value
+		PrintVariable(EEPROMtest, DEC);
+	}
+	// clear the string:
+	inputString = "";
+	stringComplete = false;
 }
 
 void serialEvent() {
@@ -230,30 +279,6 @@ void serialEvent() {
 			stringComplete = true;
 		}
 	}
-}
-
-void setAnimatePetFlag(void){
-	//ISR for BTN3
-	static unsigned long last_interrupt_time = 0;
-	unsigned long interrupt_time = millis();
-	// If interrupts come faster than 200ms, assume it's a bounce and ignore
-	if (interrupt_time - last_interrupt_time > 200)
-	{
-		animatePetFlag = !animatePetFlag;
-	}
-	last_interrupt_time = interrupt_time;
-}
-
-void setMenuFlag(void){
-	static unsigned long last_interrupt_time = 0;
-	unsigned long interrupt_time = millis();
-	// If interrupts come faster than 200ms, assume it's a bounce and ignore
-	if (interrupt_time - last_interrupt_time > 200)
-	{
-		menuFlag = !menuFlag;
-	}
-	last_interrupt_time = interrupt_time;
-
 }
 
 float UpdateAccel(void){

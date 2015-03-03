@@ -13,29 +13,40 @@ boolean disableClock = false;
 const tImage * emotions[] = { &happy, &happy_grin, &happy_smile, &heart, &mad, &really_mad, &question, &smile, &sad, &exclamation, &dotdotdot };
 const tImage * Luis[] = { &bidoof_frame_000, &bidoof_frame_001, &bidoof_frame_002, &bidoof_frame_003, &bidoof_frame_004, &bidoof_frame_005, &bidoof_frame_006, &bidoof_frame_007, &bidoof_frame_008, &bidoof_frame_009, &bidoof_frame_010, &bidoof_frame_011, &bidoof_frame_012 };
 const tImage * Eddy[] = { &eddy_frame000, &eddy_frame001, &eddy_frame002, &eddy_frame003, &eddy_frame004, &eddy_frame005, &eddy_frame006, &eddy_frame007, &eddy_frame008, &eddy_frame009, &eddy_frame010, &eddy_frame011, &eddy_frame012, &eddy_frame013, &eddy_frame014, &eddy_frame015, &eddy_frame016, &eddy_frame017 };
+const tImage * Erik[] = { &erik_frame000, &erik_frame001, &erik_frame002, &erik_frame003, &erik_frame004, &erik_frame005, &erik_frame006, &erik_frame007, &erik_frame008, &erik_frame009, &erik_frame010, &erik_frame011, };
+const tImage * Aidee[] = { &aidee_frame000, &aidee_frame001, &aidee_frame002, &aidee_frame003 };
 
 void AnimatePet(int pet){
 
 	switch (pet){
-	case EDDY:
-		for (int i = 0; i < 18; i++){
-			DrawSprite(Eddy[i], MIDDLE_MAIN_SCREEN_WIDTH - 22, MIDDLE_MAIN_SCREEN_HEIGHT + 13);
-			delay(20);
-		}break;
 	case LUIS:
 		for (int i = 0; i < 13; i++){
 			DrawSprite(Luis[i], MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
 			delay(20);
 		}break;
-	case AIDEE:
-		for (int i = 0; i < 13; i++){
-			DrawSprite(Luis[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+	case EDDY:
+		for (int i = 0; i < 18; i++){
+			DrawSprite(Eddy[i], MIDDLE_MAIN_SCREEN_WIDTH - 22, MIDDLE_MAIN_SCREEN_HEIGHT + 13);
 			delay(20);
 		}break;
+	
+	case AIDEE:
+		for (int i = 0; i < 4; i++){
+			DrawSprite(Aidee[i], MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			delay(50);
+		}
+		for (int i = 0; i < 4; i++){
+			DrawSprite(Aidee[i], MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			delay(50);
+		}
+		for (int i = 0; i < 4; i++){
+			DrawSprite(Aidee[i], MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			delay(50);
+		}break;
 	case ERIK:
-		for (int i = 0; i < 13; i++){
-			DrawSprite(Luis[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
-			delay(20);
+		for (int i = 0; i < 12; i++){
+			DrawSprite(Erik[i], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+			delay(10);
 		}break;
 	default:
 		Serial.print("Error. Sprite not found");
@@ -43,11 +54,34 @@ void AnimatePet(int pet){
 	}
 }
 
+void DrawPet(int pet){
+
+	switch (pet){
+	case LUIS:
+			DrawSprite(Luis[0], MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+		break;
+	case EDDY:
+			DrawSprite(Eddy[0], MIDDLE_MAIN_SCREEN_WIDTH - 22, MIDDLE_MAIN_SCREEN_HEIGHT + 13);
+		break;	
+	case AIDEE:
+			DrawSprite(Aidee[0], MIDDLE_MAIN_SCREEN_WIDTH - 30, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+		break;
+	case ERIK:
+			DrawSprite(Erik[0], MIDDLE_MAIN_SCREEN_WIDTH - 20, MIDDLE_MAIN_SCREEN_HEIGHT + 15);
+		break;
+	default:
+		Serial.print("Error. Sprite not found");
+		break;
+	}
+}
 void DrawExpression(int emotion){
 	//tImage frame = *emotions[emotion];
 	DrawSprite(emotions[emotion], MIDDLE_MAIN_SCREEN_WIDTH - 15, 26);
 }
-
+void ClearExpression(void){
+	//tImage frame = *emotions[emotion];
+	tft.fillRect( MIDDLE_MAIN_SCREEN_WIDTH - 15, 26, 50, 25, S6D02A1_BLACK);
+}
 
 void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y) {
 	/// <summary>
@@ -73,7 +107,9 @@ void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y) {
 
 	for (pixel = 0; pixel < imagePixels; pixel++) {
 		//draws each pixel
-		tft.pushColor(sprite->data[pixel]);
+		
+			tft.pushColor(sprite->data[pixel]);
+		
 	}
 }
 #endif
@@ -95,9 +131,7 @@ void UpdateClock(void) {
 	/// Takes care of the clock for now. Will most likely be removed once RTC is implemented
 	/// </summary>
 
-	//clear area
-	tft.fillRect(0, 135, MAIN_SCREEN_WIDTH, GUI_BOX_HEIGHT, S6D02A1_BLACK);
-	tft.drawRect(0, 135, MAIN_SCREEN_WIDTH, GUI_BOX_HEIGHT, S6D02A1_BLUE);
+	
 
 	DateTime now = rtc.now(); //Gets time from RTC
 	char *daynightFlag;
@@ -280,9 +314,7 @@ int initGUI(void){
 	//reset counts
 	UpdateSteps();
 	UpdateBattery(100);
-	if (!disableClock){
-		UpdateClock();
-	}
+	
 	return 0;
 }
 

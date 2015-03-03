@@ -1,6 +1,21 @@
 #include "hardware.h"
 #include "gui.h"
 
+void beep(uint8_t duration){
+	analogWrite(PIEZO, 150);
+	delay(duration);
+	analogWrite(PIEZO, 0);
+	delay(duration);
+}
+
+byte initEEPROM(void){
+	unsigned int address = 0;
+	writeEEPROM(EEPROM, address, 0xFF); //writes test value on EEPROM	
+	byte EEPROMtest = readEEPROM(EEPROM, address); //reads EEPROM value
+
+	return EEPROMtest;
+}
+
 void writeEEPROM(int deviceaddress, unsigned int eeaddress, char data)
 {	/// <summary>
 	/// Writes byte to EEPROM
