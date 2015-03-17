@@ -35,6 +35,6 @@ void MMA8452Active();
 void readRegisters(byte addressToRead, int bytesToRead, byte * dest);
 byte readRegister(byte addressToRead);
 void writeRegister(byte addressToWrite, byte dataToWrite);
-float UpdateAccel(void);
+int UpdateAccel(void);
 
 #endif

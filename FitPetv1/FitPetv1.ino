@@ -30,7 +30,7 @@
 - Integrated ClearBMP and many other library functions.
 */
 
-#include <Adafruit_GFX_Library\Adafruit_GFX.h>
+#include <Adafruit_GFX\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -53,12 +53,9 @@ boolean isMenuDisplayed = false;
 boolean updateGUI = true;
 boolean screenON = true;
 boolean TFTBLFlag = true;
+boolean calibrateFlag = true;
 
-volatile int calibrateFlag = 1;
-
-long previousMillis = 0;        // will store last time LED was updated
-
-long interval = 500;           // interval at which to blink (milliseconds)
+long last_interrupt_time = 0;        // will store last time LED was updated
 
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
@@ -102,6 +99,7 @@ void setup(void) {
 	inputString.reserve(200);
 
 	RunInitTests();		//tests and initializes pheripherals
+	CalibrateAccelerometer();//
 
 #if INCLUDE_SPRITES
 	DrawPet(PET);
@@ -109,16 +107,20 @@ void setup(void) {
 }
 
 void loop() {
-	float acc;
-	unsigned long currentMillis = millis();
 
-	if (currentMillis - previousMillis > 500) { //early pedometer code
-		acc = UpdateAccel();
-
-		if (acc > 0.5){
+	unsigned long interrupt_time = millis();
+	// If interrupts come faster than 200ms, assume it's a bounce and ignore
+	if (interrupt_time - last_interrupt_time > 500)
+	{
+		int steps = UpdateAccel();
+		for (int i = 0; i < steps + 1; i++){
 			UpdateSteps();
 		}
+	last_interrupt_time = interrupt_time;
+
 	}
+
+
 
 	if (battery_level < 0) {
 		battery_level = 100;
@@ -141,7 +143,9 @@ void loop() {
 		initGUI();	//redraws GUI
 		disableClock = false;
 		updateGUI = true;
+#if INCLUDE_SPRITES
 		DrawPet(random(0,4));
+#endif
 	}
 
 	if (digitalRead(BTN2) && menuFlag) {		//does nothing if no menu present
@@ -164,11 +168,13 @@ void loop() {
 		if (!menuFlag && animatePetFlag){ //if handling Pet context
 			beep(150);
 			ClearMainScreen();
+#if INCLUDE_SPRITES
 			AnimatePet(random(0, 4));	//This is Poke Pet action
 			beep(150);
 			DrawExpression(random(0,11)); //get random emotion from being poked
 			delay(1000);
 			ClearExpression();
+#endif
 		}
 	}
 		
@@ -225,7 +231,7 @@ void RunInitTests(void){
 		DebugMessage("EEPROM init: FAILED");
 	}
 
-	//rtc.adjust(DateTime(__DATE__, __TIME__));
+	rtc.adjust(DateTime(__DATE__, __TIME__));
 	if (!rtc.isrunning()) {
 		Serial.println("RTC is NOT running!");
 		delay(2000);
@@ -281,30 +287,65 @@ void serialEvent() {
 	}
 }
 
-float UpdateAccel(void){
+void CalibrateAccelerometer(void){
+	int j = 0;
 	int accelCount[3];  // Stores the 12-bit signed value
-	float x, y, z = 0.00;
-	float thresh = 0.5;
-	readAccelData(accelCount);  // Read the x/y/z adc values
+	
+	while (j < 101){
+		readAccelData(accelCount);  // Read the x/y/z adc values
 
-	// Now we'll calculate the accleration value into actual g's
+		// Now we'll calculate the accleration value into actual g's
+		float accelG[3];  // Stores the real accel value in g's
+		for (int i = 0; i < 3; i++)
+		{
+			accelG[i] = (float)accelCount[i] / ((1 << 12) / (2 * GSCALE)); // get actual g value, this depends on scale being set
+		}
+
+		xcal = xcal + accelG[0];
+		ycal = ycal + accelG[1];
+		zcal = zcal + accelG[2];
+
+		j++;
+	}
+		xcal = xcal / 100.00;
+		ycal = ycal / 100.00;
+		zcal = zcal / 100.00;
+}
+
+int UpdateAccel(void){
+	boolean range = true;
+	int stepsTaken = 0;
+	int accelCount[3];  // Stores the 12-bit signed value
+	float x, y, z, a = 0.00;
+	float acceleration_mag[49];
 	float accelG[3];  // Stores the real accel value in g's
-	for (int i = 0; i < 3; i++)
-	{
-		accelG[i] = (float)accelCount[i] / ((1 << 12) / (2 * GSCALE)); // get actual g value, this depends on scale being set
+	float accel_avg;
+	for (int j = 0; j < 51; j++){
+		readAccelData(accelCount);  // Read the x/y/z adc values
+		// Now we'll calculate the accleration value into actual g's
+		for (int i = 0; i < 3; i++)
+		{
+			accelG[i] = (float)accelCount[i] / ((1 << 12) / (2 * GSCALE)); // get actual g value, this depends on scale being set
+		}
+
+		x = accelG[0];
+		y = accelG[1];
+		z = accelG[2];
+
+		acceleration_mag[j] = abs(x - xcal) + abs(y - ycal) + abs(z - zcal);
+		delay(20);
 	}
-	
-	if (calibrateFlag){
-		Serial.print("Calibrating...");
-		xcal = accelG[0];
-		ycal = accelG[1];
-		zcal = accelG[2];
-		calibrateFlag = 0;
+
+	for (int j = 0; j < 51; j++){
+		if (acceleration_mag[j] > 0.7 && range == true){
+			range = true;
+			stepsTaken++;
+
+		}
+		else{
+			range = false;
+		}
 	}
-	
-	x = accelG[0] - xcal;
-	y = accelG[1] - ycal;
-	z = accelG[2] - zcal;
 
 	// Print out values
 	Serial.print(x, 3);  // Print g values
@@ -313,9 +354,8 @@ float UpdateAccel(void){
 	Serial.print("\t");  // tabs in between axes
 	Serial.print(z, 3);  // Print g values
 	Serial.print("\t");  // tabs in between axes
-	
+
 	Serial.println();
 
-	return x;
+	return stepsTaken;
 }
-

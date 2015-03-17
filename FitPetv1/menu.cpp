@@ -30,7 +30,7 @@ MenuFuncPtr menu_func[] = {0,
 
 void tftMenuInit()
 {
-	// Clear screen and display the menu
+	// Clear screen and diskplay the menu
 	char i;
 
 	tft.setTextColor(S6D02A1_WHITE, S6D02A1_BLACK);
