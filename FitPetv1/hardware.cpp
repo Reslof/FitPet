@@ -83,7 +83,7 @@ void initMMA8452()
 	}
 	else
 	{
-		Serial.print("Could not connect to MMA8452Q: 0x");
+		Serial.println("Could not connect to MMA8452Q: 0x");
 		DebugMessage("Accel: FAILED");
 		Serial.println(c, HEX);
 		//while (1); // Loop forever if communication doesn't happen

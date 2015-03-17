@@ -170,6 +170,22 @@ void UpdateClock(void) {
 	tft.print(now.day(), DEC);
 	tft.print('/');
 	tft.print(now.year(), DEC);
+	/*
+	//Debug, print to serial
+	//Time
+	Serial.print(now.hour(), DEC);
+	Serial.print(":");
+	Serial.print(now.minute(), DEC);
+	Serial.print(":");
+	Serial.print(now.second(), DEC);
+	Serial.println(" ");
+	//Date
+	Serial.print(now.month(), DEC);
+	Serial.print('/');
+	Serial.print(now.day(), DEC);
+	Serial.print('/');
+	Serial.println(now.year(), DEC);
+	*/
 }
 
 void UpdateSteps(void) {

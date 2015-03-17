@@ -30,7 +30,7 @@
 - Integrated ClearBMP and many other library functions.
 */
 
-#include <Adafruit_GFX\Adafruit_GFX.h>
+#include <Adafruit_GFX_Library\Adafruit_GFX.h>
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -218,20 +218,23 @@ void RunInitTests(void){
 
 	if (!initGUI()){
 		DebugMessage("GUI init: OK");
+		Serial.println("GUI init: OK");
 	}
 	else{
-		Serial.write("GUI init failed");
+		Serial.println("GUI init failed");
 	}
 
 
 	if (initEEPROM() == 0xFF){
 		DebugMessage("EEPROM init: OK");
+		Serial.println("EEPROM init: OK");
 	}
 	else{
 		DebugMessage("EEPROM init: FAILED");
+		Serial.println("EEPROM init: FAILED");
 	}
 
-	rtc.adjust(DateTime(__DATE__, __TIME__));
+	//rtc.adjust(DateTime(__DATE__, __TIME__));
 	if (!rtc.isrunning()) {
 		Serial.println("RTC is NOT running!");
 		delay(2000);
