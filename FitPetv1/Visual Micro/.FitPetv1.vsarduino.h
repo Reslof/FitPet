@@ -23,6 +23,7 @@
 #define __sam__
 #define F_CPU 84000000L
 #define __cplusplus
+#define GCC_VERSION 40301
 #define ARDUINO_ARCH_SAM
 #define ARDUINO_SAM_DUE
 #define __inline__
