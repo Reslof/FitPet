@@ -45,7 +45,7 @@
 TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC, TFT_RST);
 RTC_DS1307 rtc;
 
-float xcal, ycal, zcal = 0.0;
+float xcal, ycal, zcal, prevAcc = 0.0;
 int battery_level = 100;
 boolean animatePetFlag = true;
 boolean menuFlag = false;
@@ -85,7 +85,9 @@ void setup(void) {
 
 	tft.init();			//initializes TFT
 	tft.fillScreen(S6D02A1_BLACK);
-
+#if INCLUDE_SPRITES
+	DrawSprite(Logo[0], 15, 25);
+#endif
 	for (int i = 0; i < 256; i++){ //fade into max max brightness TFT BL
 		analogWrite(TFT_BL, i);
 		delay(5);
@@ -95,32 +97,50 @@ void setup(void) {
 	beep(150);
 	beep(150);
 
+#if INCLUDE_SPRITES
+	delay(1000);
+	ClearMainScreen();
+#endif
 	// reserve 200 bytes for the inputString:
 	inputString.reserve(200);
 
 	RunInitTests();		//tests and initializes pheripherals
 	CalibrateAccelerometer();//
 
-#if INCLUDE_SPRITES
+#if INCLUDE_SPRITES	
+	ClearMainScreen();
 	DrawPet(PET);
 #endif
+
+	Serial.println("******************************");
+	unsigned int t = 0xFFFF;
+	writeUint(0, t);
+	delay(4000);
+	unsigned int a = readUint(0);
+	Serial.println("Read value DEC: ");
+	Serial.print(a, DEC);
+	Serial.println("******************************");
+
+	delay(5000);
+
 }
 
 void loop() {
 
 	unsigned long interrupt_time = millis();
 	// If interrupts come faster than 200ms, assume it's a bounce and ignore
-	if (interrupt_time - last_interrupt_time > 500)
-	{
-		int steps = UpdateAccel();
-		for (int i = 0; i < steps + 1; i++){
-			UpdateSteps();
-		}
-	last_interrupt_time = interrupt_time;
+	if (interrupt_time - last_interrupt_time > 100){
+		UpdateAccel();
+		portraitLandscapeHandler();
+		last_interrupt_time = interrupt_time;
 
 	}
 
-
+	/* tap support
+	if (tapHandler() == 1){
+		PokePet();
+	}
+	*/
 
 	if (battery_level < 0) {
 		battery_level = 100;
@@ -166,15 +186,7 @@ void loop() {
 			animatePetFlag = false;
 		}
 		if (!menuFlag && animatePetFlag){ //if handling Pet context
-			beep(150);
-			ClearMainScreen();
-#if INCLUDE_SPRITES
-			AnimatePet(random(0, 4));	//This is Poke Pet action
-			beep(150);
-			DrawExpression(random(0,11)); //get random emotion from being poked
-			delay(1000);
-			ClearExpression();
-#endif
+			PokePet();
 		}
 	}
 		
@@ -182,6 +194,20 @@ void loop() {
 		HandleBTCommands();
 	}
 
+}
+
+void PokePet(void){
+	if (!menuFlag){ //if handling Pet context
+		beep(150);
+		ClearMainScreen();
+#if INCLUDE_SPRITES
+		AnimatePet(random(0, 4));	//This is Poke Pet action
+		beep(150);
+		DrawExpression(random(0, 11)); //get random emotion from being poked
+		delay(1000);
+		ClearExpression();
+#endif
+	}
 }
 
 void setMenuFlag(void){
@@ -225,7 +251,7 @@ void RunInitTests(void){
 	}
 
 
-	if (initEEPROM() == 0xFF){
+	if (!initEEPROM()){
 		DebugMessage("EEPROM init: OK");
 		Serial.println("EEPROM init: OK");
 	}
@@ -234,7 +260,7 @@ void RunInitTests(void){
 		Serial.println("EEPROM init: FAILED");
 	}
 
-	//rtc.adjust(DateTime(__DATE__, __TIME__));
+	rtc.adjust(DateTime(__DATE__, __TIME__));
 	if (!rtc.isrunning()) {
 		Serial.println("RTC is NOT running!");
 		delay(2000);
@@ -242,9 +268,9 @@ void RunInitTests(void){
 		rtc.adjust(DateTime(__DATE__, __TIME__));
 	}
 
-	initMMA8452(); //Test and intialize the MMA8452
+	initMMA8452(SCALE, DATARATE); //Test and intialize the MMA8452
 
-	delay(3000); //wait
+	//delay(3000); //wait
 	ClearMainScreen();
 }
 void HandleBTCommands(void){//handles Bluetooth commands!!!! 
@@ -320,36 +346,28 @@ int UpdateAccel(void){
 	int stepsTaken = 0;
 	int accelCount[3];  // Stores the 12-bit signed value
 	float x, y, z, a = 0.00;
-	float acceleration_mag[49];
+	float acceleration_mag;
 	float accelG[3];  // Stores the real accel value in g's
 	float accel_avg;
-	for (int j = 0; j < 51; j++){
-		readAccelData(accelCount);  // Read the x/y/z adc values
-		// Now we'll calculate the accleration value into actual g's
-		for (int i = 0; i < 3; i++)
-		{
+
+	readAccelData(accelCount);  // Read the x/y/z adc values
+	// Now we'll calculate the accleration value into actual g's
+	for (int i = 0; i < 3; i++){
 			accelG[i] = (float)accelCount[i] / ((1 << 12) / (2 * GSCALE)); // get actual g value, this depends on scale being set
-		}
-
-		x = accelG[0];
-		y = accelG[1];
-		z = accelG[2];
-
-		acceleration_mag[j] = abs(x - xcal) + abs(y - ycal) + abs(z - zcal);
-		delay(20);
 	}
 
-	for (int j = 0; j < 51; j++){
-		if (acceleration_mag[j] > 0.7 && range == true){
-			range = true;
-			stepsTaken++;
+	x = accelG[0];
+	y = accelG[1];
+	z = accelG[2];
 
-		}
-		else{
-			range = false;
-		}
+	acceleration_mag = abs(x - xcal) + abs(y - ycal) + abs(z - zcal);
+	
+	if (acceleration_mag - prevAcc > 0.7){
+		UpdateSteps();
 	}
 
+	prevAcc = acceleration_mag;
+	
 	// Print out values
 	Serial.print(x, 3);  // Print g values
 	Serial.print("\t");  // tabs in between axes
@@ -361,4 +379,5 @@ int UpdateAccel(void){
 	Serial.println();
 
 	return stepsTaken;
+
 }

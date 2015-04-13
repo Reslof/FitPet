@@ -60,6 +60,7 @@ extern const tImage * Luis[];
 extern const tImage * Eddy[];
 extern const tImage * Erik[];
 extern const tImage * Aidee[];
+extern const tImage * Logo[];
 
 void AnimatePet(int);
 void DrawPet(int);

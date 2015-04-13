@@ -15,6 +15,7 @@ const tImage * Luis[] = { &bidoof_frame_000, &bidoof_frame_001, &bidoof_frame_00
 const tImage * Eddy[] = { &eddy_frame000, &eddy_frame001, &eddy_frame002, &eddy_frame003, &eddy_frame004, &eddy_frame005, &eddy_frame006, &eddy_frame007, &eddy_frame008, &eddy_frame009, &eddy_frame010, &eddy_frame011, &eddy_frame012, &eddy_frame013, &eddy_frame014, &eddy_frame015, &eddy_frame016, &eddy_frame017 };
 const tImage * Erik[] = { &erik_frame000, &erik_frame001, &erik_frame002, &erik_frame003, &erik_frame004, &erik_frame005, &erik_frame006, &erik_frame007, &erik_frame008, &erik_frame009, &erik_frame010, &erik_frame011, };
 const tImage * Aidee[] = { &aidee_frame000, &aidee_frame001, &aidee_frame002, &aidee_frame003 };
+const tImage * Logo[] = { &fitpet_logo_conceptv2 };
 
 void AnimatePet(int pet){
 
