@@ -71,6 +71,7 @@ void ClearExpression(void);
 
 extern boolean disableClock;
 extern unsigned int stepsTaken;
+extern unsigned int battery_level;
 
 int initGUI(void);
 void DebugMessage(char *message);
@@ -78,7 +79,7 @@ void DebugMessage(String message);
 void LoadingScreenCircles(void);
 void LoadingScreenIcon(void);
 void PrintVariable(unsigned char variable, int representation);
-void UpdateBattery(int BATTERY_LEVEL);
+void UpdateBattery(void);
 void UpdateClock(void);
 void UpdateSteps(void);
 void ClearMainScreen(void);

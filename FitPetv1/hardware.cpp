@@ -10,15 +10,17 @@ void beep(uint8_t duration){
 
 int initEEPROM(void){
 	int status = 1;
-	unsigned int address = 0;
-	writeEEPROM(EEPROM, address, 0xFF); //writes test value on EEPROM	
+	unsigned int address = 32000;
+	writeEEPROM(EEPROM, address, 0x88); //writes test value on EEPROM	
 	unsigned int EEPROMtest = readEEPROM(EEPROM, address); //reads EEPROM value
 
-	if (EEPROMtest == 0xFF){
-		status = 0;
-	}
 	Serial.println("EEPROM Test Value:");
 	Serial.println(EEPROMtest, HEX);
+
+	if (EEPROMtest == 0x88){
+		status = 0;
+	}
+	
 
 	return status;
 }
@@ -32,6 +34,8 @@ void writeEEPROM(int deviceaddress, unsigned int eeaddress, byte data)
 	Wire.write((int)(eeaddress & 0xFF)); // LSB
 	Wire.write(data);
 	Wire.endTransmission();
+
+	delay(5);
 
 }
 
@@ -63,13 +67,14 @@ unsigned int readUint(unsigned int addr)
 }
 void writeUint(unsigned int addr, unsigned int x)
 {
+	if (EEPROM_available){
+		data.ui = x;
 
-	data.ui = x;
+		for (int i = 0; i < 2; i++)
+		{
+			writeEEPROM(EEPROM, addr + i, data.b[i]);
 
-	for (int i = 0; i < 2; i++)
-	{
-		writeEEPROM(EEPROM, addr + i, data.b[i]);
-
+		}
 	}
 }
 
@@ -113,57 +118,87 @@ void initMMA8452(byte fsr, byte dataRate)
 		Serial.print("Could not connect to MMA8452Q: 0x");
 		Serial.println(c, HEX);
 		DebugMessage("Accel init : FAILED");
+		ACCEL_available = false;
 	}
 
-	MMA8452Standby();  // Must be in standby to change registers
+	if (ACCEL_available){
 
-	// Set up the full scale range to 2, 4, or 8g.
-	if ((fsr == 2) || (fsr == 4) || (fsr == 8))
-		writeRegister(0x0E, fsr >> 2);
-	else
-		writeRegister(0x0E, 0);
+		MMA8452Standby();  // Must be in standby to change registers
 
-	// Setup the 3 data rate bits, from 0 to 7
-	writeRegister(0x2A, readRegister(0x2A) & ~(0x38));
-	if (dataRate <= 7)
-		writeRegister(0x2A, readRegister(0x2A) | (dataRate << 3));
+		// Set up the full scale range to 2, 4, or 8g.
+		if ((fsr == 2) || (fsr == 4) || (fsr == 8))
+			writeRegister(0x0E, fsr >> 2);
+		else
+			writeRegister(0x0E, 0);
 
-	// Set up portrait/landscap registers - 4 steps:
-	// 1. Enable P/L
-	// 2. Set the back/front angle trigger points (z-lock)
-	// 3. Set the threshold/hysteresis angle
-	// 4. Set the debouce rate
-	// For more info check out this app note: http://cache.freescale.com/files/sensors/doc/app_note/AN4068.pdf
-	writeRegister(0x11, 0x40);  // 1. Enable P/L
-	writeRegister(0x13, 0x44);  // 2. 29deg z-lock (don't think this register is actually writable)
-	writeRegister(0x14, 0x84);  // 3. 45deg thresh, 14deg hyst (don't think this register is writable either)
-	writeRegister(0x12, 0x50);  // 4. debounce counter at 100ms (at 800 hz)
+		// Setup the 3 data rate bits, from 0 to 7
+		writeRegister(0x2A, readRegister(0x2A) & ~(0x38));
+		if (dataRate <= 7)
+			writeRegister(0x2A, readRegister(0x2A) | (dataRate << 3));
 
-	/* Set up single and double tap - 5 steps:
-	1. Set up single and/or double tap detection on each axis individually.
-	2. Set the threshold - minimum required acceleration to cause a tap.
-	3. Set the time limit - the maximum time that a tap can be above the threshold
-	4. Set the pulse latency - the minimum required time between one pulse and the next
-	5. Set the second pulse window - maximum allowed time between end of latency and start of second pulse
-	for more info check out this app note: http://cache.freescale.com/files/sensors/doc/app_note/AN4072.pdf */
-	writeRegister(0x21, 0x7F);  // 1. enable single/double taps on all axes
-	// writeRegister(0x21, 0x55);  // 1. single taps only on all axes
-	// writeRegister(0x21, 0x6A);  // 1. double taps only on all axes
-	writeRegister(0x23, 0x20);  // 2. x thresh at 2g, multiply the value by 0.0625g/LSB to get the threshold
-	writeRegister(0x24, 0x20);  // 2. y thresh at 2g, multiply the value by 0.0625g/LSB to get the threshold
-	writeRegister(0x25, 0x08);  // 2. z thresh at .5g, multiply the value by 0.0625g/LSB to get the threshold
-	writeRegister(0x26, 0x30);  // 3. 30ms time limit at 800Hz odr, this is very dependent on data rate, see the app note
-	writeRegister(0x27, 0xA0);  // 4. 200ms (at 800Hz odr) between taps min, this also depends on the data rate
-	writeRegister(0x28, 0xFF);  // 5. 318ms (max value) between taps max
+		// Set up portrait/landscap registers - 4 steps:
+		// 1. Enable P/L
+		// 2. Set the back/front angle trigger points (z-lock)
+		// 3. Set the threshold/hysteresis angle
+		// 4. Set the debouce rate
+		// For more info check out this app note: http://cache.freescale.com/files/sensors/doc/app_note/AN4068.pdf
+		writeRegister(0x11, 0x40);  // 1. Enable P/L
+		writeRegister(0x13, 0x44);  // 2. 29deg z-lock (don't think this register is actually writable)
+		writeRegister(0x14, 0x84);  // 3. 45deg thresh, 14deg hyst (don't think this register is writable either)
+		writeRegister(0x12, 0x50);  // 4. debounce counter at 100ms (at 800 hz)
 
-	// Set up interrupt 1 and 2
-	writeRegister(0x2C, 0x02);  // Active high, push-pull interrupts
-	writeRegister(0x2D, 0x19);  // DRDY, P/L and tap ints enabled
-	writeRegister(0x2E, 0x01);  // DRDY on INT1, P/L and taps on INT2
+		/* Set up single and double tap - 5 steps:
+		1. Set up single and/or double tap detection on each axis individually.
+		2. Set the threshold - minimum required acceleration to cause a tap.
+		3. Set the time limit - the maximum time that a tap can be above the threshold
+		4. Set the pulse latency - the minimum required time between one pulse and the next
+		5. Set the second pulse window - maximum allowed time between end of latency and start of second pulse
+		for more info check out this app note: http://cache.freescale.com/files/sensors/doc/app_note/AN4072.pdf */
+		writeRegister(0x21, 0x7F);  // 1. enable single/double taps on all axes
+		// writeRegister(0x21, 0x55);  // 1. single taps only on all axes
+		// writeRegister(0x21, 0x6A);  // 1. double taps only on all axes
+		writeRegister(0x23, 0x20);  // 2. x thresh at 2g, multiply the value by 0.0625g/LSB to get the threshold
+		writeRegister(0x24, 0x20);  // 2. y thresh at 2g, multiply the value by 0.0625g/LSB to get the threshold
+		writeRegister(0x25, 0x08);  // 2. z thresh at .5g, multiply the value by 0.0625g/LSB to get the threshold
+		writeRegister(0x26, 0x30);  // 3. 30ms time limit at 800Hz odr, this is very dependent on data rate, see the app note
+		writeRegister(0x27, 0xA0);  // 4. 200ms (at 800Hz odr) between taps min, this also depends on the data rate
+		writeRegister(0x28, 0xFF);  // 5. 318ms (max value) between taps max
 
-	MMA8452Active();  // Set to active to start reading
+		// Set up interrupt 1 and 2
+		writeRegister(0x2C, 0x02);  // Active high, push-pull interrupts
+		writeRegister(0x2D, 0x19);  // DRDY, P/L and tap ints enabled
+		writeRegister(0x2E, 0x01);  // DRDY on INT1, P/L and taps on INT2
+
+		MMA8452Active();  // Set to active to start reading
+		CalibrateAccelerometer();
+	}
+
 }
 
+void CalibrateAccelerometer(void){
+	int j = 0;
+	int accelCount[3];  // Stores the 12-bit signed value
+
+	while (j < 101){
+		readAccelData(accelCount);  // Read the x/y/z adc values
+
+		// Now we'll calculate the accleration value into actual g's
+		float accelG[3];  // Stores the real accel value in g's
+		for (int i = 0; i < 3; i++)
+		{
+			accelG[i] = (float)accelCount[i] / ((1 << 12) / (2 * GSCALE)); // get actual g value, this depends on scale being set
+		}
+
+		xcal = xcal + accelG[0];
+		ycal = ycal + accelG[1];
+		zcal = zcal + accelG[2];
+
+		j++;
+	}
+	xcal = xcal / 100.00;
+	ycal = ycal / 100.00;
+	zcal = zcal / 100.00;
+}
 // Sets the MMA8452 to standby mode. It must be in standby to change most register settings
 void MMA8452Standby()
 {
@@ -258,6 +293,6 @@ void portraitLandscapeHandler()
 }
 
 void setSteps(int correction){
-	stepsTaken = readUint(32);
+	stepsTaken = readUint(0);
 	stepsTaken + correction;
 }

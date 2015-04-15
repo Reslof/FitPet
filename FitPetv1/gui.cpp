@@ -115,16 +115,17 @@ void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y) {
 }
 
 
-void UpdateBattery(int BATTERY_LEVEL) {
+void UpdateBattery(void) {
 	/// <summary>
 	/// Prints battery level to GUI
 	/// </summary>
 	tft.setCursor(68, 15); //sets cursor in right place
-	if (BATTERY_LEVEL < 100) {
-		tft.print(" ");
+
+	if (battery_level < 100){
+		Serial.print(" ");
 	}
 
-	tft.print(BATTERY_LEVEL);
+	tft.print(battery_level);
 	tft.print("%");
 }
 void UpdateClock(void) {
@@ -132,61 +133,62 @@ void UpdateClock(void) {
 	/// Takes care of the clock for now. Will most likely be removed once RTC is implemented
 	/// </summary>
 
-	
+	if (RTC_available){
 
-	DateTime now = rtc.now(); //Gets time from RTC
-	char *daynightFlag;
+		DateTime now = rtc.now(); //Gets time from RTC
+		char *daynightFlag;
 
-	// Update digital time
-	tft.setCursor(34, 138);
+		// Update digital time
+		tft.setCursor(34, 138);
 
-	if (now.hour() > 12){
-		tft.print(now.hour() - 12, DEC);
-		daynightFlag = " pm";
+		if (now.hour() > 12){
+			tft.print(now.hour() - 12, DEC);
+			daynightFlag = " pm";
+		}
+		else{
+			tft.print(now.hour(), DEC);
+			daynightFlag = " am";
+		}
+
+		tft.print(':');
+		if (now.minute() < 10){
+			tft.print("0");
+		}
+		tft.print(now.minute(), DEC);
+		tft.print(':');
+
+		if (now.second() < 10){
+			tft.print("0");
+		}
+
+		tft.print(now.second(), DEC);
+		tft.print(daynightFlag);
+
+		// Update date
+		tft.setCursor(34, 150);
+
+		tft.print(now.month(), DEC);
+		tft.print('/');
+		tft.print(now.day(), DEC);
+		tft.print('/');
+		tft.print(now.year(), DEC);
+		/*
+		//Debug, print to serial
+		//Time
+		Serial.print(now.hour(), DEC);
+		Serial.print(":");
+		Serial.print(now.minute(), DEC);
+		Serial.print(":");
+		Serial.print(now.second(), DEC);
+		Serial.println(" ");
+		//Date
+		Serial.print(now.month(), DEC);
+		Serial.print('/');
+		Serial.print(now.day(), DEC);
+		Serial.print('/');
+		Serial.println(now.year(), DEC);
+		*/
 	}
-	else{
-		tft.print(now.hour(), DEC);
-		daynightFlag = " am";
-	}
-	
-	tft.print(':');
-	if (now.minute() < 10){
-		tft.print("0");
-	}
-	tft.print(now.minute(), DEC);
-	tft.print(':');
-	
-	if (now.second() < 10){
-		tft.print("0");
-	}
-
-	tft.print(now.second(), DEC);
-	tft.print(daynightFlag);
-
-	// Update date
-	tft.setCursor(34, 150);
-
-	tft.print(now.month(), DEC);
-	tft.print('/');
-	tft.print(now.day(), DEC);
-	tft.print('/');
-	tft.print(now.year(), DEC);
-	/*
-	//Debug, print to serial
-	//Time
-	Serial.print(now.hour(), DEC);
-	Serial.print(":");
-	Serial.print(now.minute(), DEC);
-	Serial.print(":");
-	Serial.print(now.second(), DEC);
-	Serial.println(" ");
-	//Date
-	Serial.print(now.month(), DEC);
-	Serial.print('/');
-	Serial.print(now.day(), DEC);
-	Serial.print('/');
-	Serial.println(now.year(), DEC);
-	*/
 }
 
 void UpdateSteps(void) {
@@ -194,10 +196,10 @@ void UpdateSteps(void) {
 	/// Prints steps_taken to GUI.
 	/// </summary>
 	//probably need to add code to fetch value from EEPROM once its integrated
+	//tft.setCursor(3, 15);
+	//tft.print("          ");
 	tft.setCursor(3, 15);
-	tft.print("          ");
-	tft.setCursor(3, 15);
-	tft.print(stepsTaken++);
+	tft.print(stepsTaken);
 }
 
 void DebugMessage(char *message){
@@ -333,7 +335,7 @@ int initGUI(void){
 	//reset counts
 
 	UpdateSteps();
-	UpdateBattery(100);
+	UpdateBattery();
 	
 	return 0;
 }

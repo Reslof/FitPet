@@ -45,8 +45,6 @@
 TFT_S6D02A1 tft = TFT_S6D02A1(TFT_CS, TFT_DC, TFT_RST);
 RTC_DS1307 rtc;
 
-float xcal, ycal, zcal, prevAcc = 0.0;
-int battery_level = 100;
 boolean animatePetFlag = true;
 boolean menuFlag = false;
 boolean isMenuDisplayed = false;
@@ -54,15 +52,31 @@ boolean updateGUI = true;
 boolean screenON = true;
 boolean TFTBLFlag = true;
 boolean calibrateFlag = true;
+boolean EEPROM_available, RTC_available, ACCEL_available = true;
 
+float xcal, ycal, zcal, prevAcc = 0.0;
 long last_interrupt_time = 0;        // will store last time LED was updated
 long last_step_save_time = 0;
 unsigned int stepsTaken = 0;
+unsigned int battery_level = 0;
 
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 
 char  menu_select = 1;     // Currently elected menu item
+
+
+// Define the number of samples to keep track of.  The higher the number,
+// the more the readings will be smoothed, but the slower the output will
+// respond to the input.  Using a constant rather than a normal variable lets
+// use this value to determine the size of the readings array.
+const int numReadings = 50;
+
+int readings[numReadings];      // the readings from the analog input
+int iindex = 0;                  // the index of the current reading
+int total = 0;                  // the running total
+int average = 0;                // the average
+
 
 void setup(void) {
 	Serial.begin(9600);
@@ -75,7 +89,9 @@ void setup(void) {
 	pinMode(BTN4, INPUT);
 	pinMode(PIEZO, OUTPUT);
 	pinMode(TFT_BL, OUTPUT);
+	pinMode(BATTERY_IN, INPUT);
 
+	analogReadResolution(12); //12-byte resolution 0-4095 max possible
 	analogWrite(TFT_BL, 0); //make sure TFT backlight is off
 
 	attachInterrupt(BTN1, setMenuFlag, FALLING); //handles button interrupts
@@ -112,7 +128,7 @@ void setup(void) {
 	DrawPet(PET);
 #endif
 
-	setSteps(0);
+	setSteps(0); //loads step count from memory
 
 	/*
 	Serial.println("******************************");
@@ -130,15 +146,30 @@ void setup(void) {
 	delay(5000);
 	*/
 
-	writeUint(32, 0);
-	setSteps(0);
-	stepsTaken = 0;
-}
+	//writeUint(0, 0x0000);
+
+	for (int thisReading = 0; thisReading < numReadings; thisReading++)
+		readings[thisReading] = 0;
+	
+	}
 
 void loop() {
+	// Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+
+	//float voltage = analogRead(BATTERY_IN) * (7.4 / 4095.0);
+	
+	//battery_level = map(analogRead(BATTERY_IN), 0, 4095, 0, 100);
+
+	//Serial.println("A0 Read in:");
+	//Serial.print(battery_level);
+	//Serial.println("%");
+	SmoothBatteryLevel();
 
 
-	Serial.println(stepsTaken);
+
+
+
+	UpdateBattery();
 
 	unsigned long interrupt_time = millis();
 	unsigned long save_steps_time = millis();
@@ -146,6 +177,7 @@ void loop() {
 	// If interrupts come faster than 200ms, assume it's a bounce and ignore
 	if (interrupt_time - last_interrupt_time > 100){
 		UpdateAccel();
+		UpdateSteps();
 		//portraitLandscapeHandler();
 		last_interrupt_time = interrupt_time;
 
@@ -157,9 +189,9 @@ void loop() {
 	}
 	*/
 	if (save_steps_time - last_step_save_time > 5000){
-		writeUint(32, stepsTaken);
+		writeUint(0, stepsTaken);
 		last_step_save_time = save_steps_time;
-		Serial.println("Now saving: ");
+		Serial.println("Now saving steps: ");
 		Serial.println(stepsTaken);
 	}
 
@@ -217,7 +249,31 @@ void loop() {
 	}
 
 }
+void SmoothBatteryLevel(){
 
+	// subtract the last reading:
+	total = total - readings[iindex];
+	// read from the sensor:  
+	readings[iindex] = analogRead(A0);
+	// add the reading to the total:
+	total = total + readings[iindex];
+	// advance to the next position in the array:  
+	iindex = iindex + 1;
+
+	// if we're at the end of the array...
+	if (iindex >= numReadings)
+		// ...wrap around to the beginning: 
+		iindex = 0;
+
+	// calculate the average:
+	average = total / numReadings;
+	// send it to the computer as ASCII digits
+	Serial.println("Average: ");
+	Serial.println(average);
+	
+	battery_level = map(average, 0, 4095, 0, 100);
+
+}
 void PokePet(void){
 	if (!menuFlag){ //if handling Pet context
 		beep(150);
@@ -280,6 +336,7 @@ void RunInitTests(void){
 	else{
 		DebugMessage("EEPROM init: FAILED");
 		Serial.println("EEPROM init: FAILED");
+		EEPROM_available = false;
 	}
 
 	rtc.adjust(DateTime(__DATE__, __TIME__));
@@ -288,10 +345,10 @@ void RunInitTests(void){
 		delay(2000);
 		// following line sets the RTC to the date & time this sketch was compiled
 		rtc.adjust(DateTime(__DATE__, __TIME__));
+		RTC_available = false;
 	}
 
 	initMMA8452(SCALE, DATARATE); //Test and intialize the MMA8452
-	CalibrateAccelerometer();
 
 	//delay(3000); //wait
 	ClearMainScreen();
@@ -339,68 +396,44 @@ void serialEvent() {
 	}
 }
 
-void CalibrateAccelerometer(void){
-	int j = 0;
-	int accelCount[3];  // Stores the 12-bit signed value
-	
-	while (j < 101){
-		readAccelData(accelCount);  // Read the x/y/z adc values
-
-		// Now we'll calculate the accleration value into actual g's
+int UpdateAccel(void){
+	if (ACCEL_available){
+		boolean range = true;
+		int accelCount[3];  // Stores the 12-bit signed value
+		float x, y, z, a = 0.00;
+		float acceleration_mag;
 		float accelG[3];  // Stores the real accel value in g's
-		for (int i = 0; i < 3; i++)
-		{
+		float accel_avg;
+
+		readAccelData(accelCount);  // Read the x/y/z adc values
+		// Now we'll calculate the accleration value into actual g's
+		for (int i = 0; i < 3; i++){
 			accelG[i] = (float)accelCount[i] / ((1 << 12) / (2 * GSCALE)); // get actual g value, this depends on scale being set
 		}
 
-		xcal = xcal + accelG[0];
-		ycal = ycal + accelG[1];
-		zcal = zcal + accelG[2];
+		x = accelG[0];
+		y = accelG[1];
+		z = accelG[2];
 
-		j++;
+		acceleration_mag = abs(x - xcal) + abs(y - ycal) + abs(z - zcal);
+
+		if (acceleration_mag - prevAcc > 0.7){
+			stepsTaken++;
+		}
+
+		prevAcc = acceleration_mag;
+		/*
+		// Print out values
+		Serial.print(x, 3);  // Print g values
+		Serial.print("\t");  // tabs in between axes
+		Serial.print(y, 3);  // Print g values
+		Serial.print("\t");  // tabs in between axes
+		Serial.print(z, 3);  // Print g values
+		Serial.print("\t");  // tabs in between axes
+
+		Serial.println();
+		*/
+		return 0;
 	}
-		xcal = xcal / 100.00;
-		ycal = ycal / 100.00;
-		zcal = zcal / 100.00;
-}
-
-int UpdateAccel(void){
-	boolean range = true;
-	int stepsTaken = 0;
-	int accelCount[3];  // Stores the 12-bit signed value
-	float x, y, z, a = 0.00;
-	float acceleration_mag;
-	float accelG[3];  // Stores the real accel value in g's
-	float accel_avg;
-
-	readAccelData(accelCount);  // Read the x/y/z adc values
-	// Now we'll calculate the accleration value into actual g's
-	for (int i = 0; i < 3; i++){
-			accelG[i] = (float)accelCount[i] / ((1 << 12) / (2 * GSCALE)); // get actual g value, this depends on scale being set
-	}
-
-	x = accelG[0];
-	y = accelG[1];
-	z = accelG[2];
-
-	acceleration_mag = abs(x - xcal) + abs(y - ycal) + abs(z - zcal);
-	
-	if (acceleration_mag - prevAcc > 0.7){
-		UpdateSteps();
-	}
-
-	prevAcc = acceleration_mag;
-	/*
-	// Print out values
-	Serial.print(x, 3);  // Print g values
-	Serial.print("\t");  // tabs in between axes
-	Serial.print(y, 3);  // Print g values
-	Serial.print("\t");  // tabs in between axes
-	Serial.print(z, 3);  // Print g values
-	Serial.print("\t");  // tabs in between axes
-
-	Serial.println();
-	*/
-	return stepsTaken;
 
 }

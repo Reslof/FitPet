@@ -5,6 +5,7 @@
 #endif
 
 //Hardware constants
+#define BATTERY_IN A0
 #define PIEZO   4    //piezzo, pwm output
 #define BTN1    37   //button 1, active high
 #define BTN2    39   //button 2, active high
@@ -31,6 +32,8 @@ union
 	unsigned int ui;
 } data;
 
+extern boolean EEPROM_available, RTC_available, ACCEL_available;
+extern float xcal, ycal, zcal, prevAcc;
 
 //function prototypes
 void beep(uint8_t duration);
@@ -50,4 +53,6 @@ int UpdateAccel(void);
 int tapHandler(void);
 void setSteps(int correction);
 void portraitLandscapeHandler();
+void CalibrateAccelerometer(void);
+
 #endif
