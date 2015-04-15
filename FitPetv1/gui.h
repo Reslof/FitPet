@@ -53,23 +53,24 @@ extern volatile uint8_t highlightLine;
 #define ERIK 3
 //function prototypes
 
-#if INCLUDE_SPRITES
+extern const tImage * Logo[];
+void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y);
 
+#if INCLUDE_SPRITES
 extern const tImage * emotions[];
 extern const tImage * Luis[];
 extern const tImage * Eddy[];
 extern const tImage * Erik[];
 extern const tImage * Aidee[];
-extern const tImage * Logo[];
 
 void AnimatePet(int);
 void DrawPet(int);
 void DrawExpression(int);
-void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y);
 void ClearExpression(void);
 #endif
 
 extern boolean disableClock;
+extern unsigned int stepsTaken;
 
 int initGUI(void);
 void DebugMessage(char *message);

@@ -9,15 +9,15 @@ void beep(uint8_t duration){
 }
 
 int initEEPROM(void){
-	int status = 0;
+	int status = 1;
 	unsigned int address = 0;
 	writeEEPROM(EEPROM, address, 0xFF); //writes test value on EEPROM	
 	unsigned int EEPROMtest = readEEPROM(EEPROM, address); //reads EEPROM value
 
 	if (EEPROMtest == 0xFF){
-		status = 1;
+		status = 0;
 	}
-
+	Serial.println("EEPROM Test Value:");
 	Serial.println(EEPROMtest, HEX);
 
 	return status;
@@ -55,12 +55,7 @@ unsigned int readEEPROM(int deviceaddress, unsigned int eeaddress)
 
 unsigned int readUint(unsigned int addr)
 {
-	union
-	{
-		byte b[4];
-		unsigned int ui;
-	} data;
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		data.b[i] = readEEPROM(EEPROM, addr + i);
 	}
@@ -68,15 +63,13 @@ unsigned int readUint(unsigned int addr)
 }
 void writeUint(unsigned int addr, unsigned int x)
 {
-	union
-	{
-		byte b[4];
-		unsigned ui;
-	} data;
+
 	data.ui = x;
-	for (int i = 0; i < 4; i++)
+
+	for (int i = 0; i < 2; i++)
 	{
 		writeEEPROM(EEPROM, addr + i, data.b[i]);
+
 	}
 }
 
@@ -262,4 +255,9 @@ void portraitLandscapeHandler()
 	if (pl & 0x40)  // Check the LO bit
 		Serial.print(", Z-tilt!");
 	Serial.println();
+}
+
+void setSteps(int correction){
+	stepsTaken = readUint(32);
+	stepsTaken + correction;
 }

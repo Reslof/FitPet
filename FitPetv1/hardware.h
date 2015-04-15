@@ -25,6 +25,13 @@
 
 #define GSCALE 2 // Sets full-scale range to +/-2, 4, or 8g. Used to calc real g values.
 
+union
+{
+	byte b[4];
+	unsigned int ui;
+} data;
+
+
 //function prototypes
 void beep(uint8_t duration);
 void writeEEPROM(int deviceaddress, unsigned int eeaddress, byte data);
@@ -41,5 +48,6 @@ unsigned int readUint(unsigned int addr);
 void writeUint(unsigned int addr, unsigned int x);
 int UpdateAccel(void);
 int tapHandler(void);
+void setSteps(int correction);
 void portraitLandscapeHandler();
 #endif

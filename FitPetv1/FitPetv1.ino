@@ -56,6 +56,8 @@ boolean TFTBLFlag = true;
 boolean calibrateFlag = true;
 
 long last_interrupt_time = 0;        // will store last time LED was updated
+long last_step_save_time = 0;
+unsigned int stepsTaken = 0;
 
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
@@ -85,9 +87,8 @@ void setup(void) {
 
 	tft.init();			//initializes TFT
 	tft.fillScreen(S6D02A1_BLACK);
-#if INCLUDE_SPRITES
 	DrawSprite(Logo[0], 15, 25);
-#endif
+
 	for (int i = 0; i < 256; i++){ //fade into max max brightness TFT BL
 		analogWrite(TFT_BL, i);
 		delay(5);
@@ -105,33 +106,47 @@ void setup(void) {
 	inputString.reserve(200);
 
 	RunInitTests();		//tests and initializes pheripherals
-	CalibrateAccelerometer();//
 
 #if INCLUDE_SPRITES	
 	ClearMainScreen();
 	DrawPet(PET);
 #endif
 
+	setSteps(0);
+
+	/*
 	Serial.println("******************************");
-	unsigned int t = 0xFFFF;
+	Serial.println("Stored value: ");
+	unsigned int t = 0xFAFA;
+	Serial.println(t, HEX);
+
 	writeUint(0, t);
 	delay(4000);
 	unsigned int a = readUint(0);
 	Serial.println("Read value DEC: ");
-	Serial.print(a, DEC);
+	Serial.println(a, HEX);
 	Serial.println("******************************");
 
 	delay(5000);
+	*/
 
+	writeUint(32, 0);
+	setSteps(0);
+	stepsTaken = 0;
 }
 
 void loop() {
 
+
+	Serial.println(stepsTaken);
+
 	unsigned long interrupt_time = millis();
+	unsigned long save_steps_time = millis();
+
 	// If interrupts come faster than 200ms, assume it's a bounce and ignore
 	if (interrupt_time - last_interrupt_time > 100){
 		UpdateAccel();
-		portraitLandscapeHandler();
+		//portraitLandscapeHandler();
 		last_interrupt_time = interrupt_time;
 
 	}
@@ -141,6 +156,13 @@ void loop() {
 		PokePet();
 	}
 	*/
+	if (save_steps_time - last_step_save_time > 5000){
+		writeUint(32, stepsTaken);
+		last_step_save_time = save_steps_time;
+		Serial.println("Now saving: ");
+		Serial.println(stepsTaken);
+	}
+
 
 	if (battery_level < 0) {
 		battery_level = 100;
@@ -269,6 +291,7 @@ void RunInitTests(void){
 	}
 
 	initMMA8452(SCALE, DATARATE); //Test and intialize the MMA8452
+	CalibrateAccelerometer();
 
 	//delay(3000); //wait
 	ClearMainScreen();
@@ -367,7 +390,7 @@ int UpdateAccel(void){
 	}
 
 	prevAcc = acceleration_mag;
-	
+	/*
 	// Print out values
 	Serial.print(x, 3);  // Print g values
 	Serial.print("\t");  // tabs in between axes
@@ -377,7 +400,7 @@ int UpdateAccel(void){
 	Serial.print("\t");  // tabs in between axes
 
 	Serial.println();
-
+	*/
 	return stepsTaken;
 
 }
