@@ -122,7 +122,7 @@ void UpdateBattery(void) {
 	tft.setCursor(68, 15); //sets cursor in right place
 
 	if (battery_level < 100){
-		Serial.print(" ");
+		tft.print(" ");
 	}
 
 	tft.print(battery_level);
@@ -366,13 +366,15 @@ void DrawMenuItem(char * item, int BG_COLOR){// Prints text to screen. Automatic
 	}
 }
 
-void DrawMenuTitle(char * title, char *subtitle){
+void DrawMenuTitle(char* menu[]){
+	char* title = menu[0];
+	
 	disableClock = true;
 	tft.fillRect(0, 135, MAIN_SCREEN_WIDTH, GUI_BOX_HEIGHT, S6D02A1_BLACK);
 	tft.drawRect(0, 135, MAIN_SCREEN_WIDTH, GUI_BOX_HEIGHT, S6D02A1_BLUE);
 	tft.setTextColor(S6D02A1_BLUE);
 	tft.setCursor(34, 138);
 	tft.println(title);
-	tft.println(subtitle);
+	tft.println("   Choose an option.");
 
 }

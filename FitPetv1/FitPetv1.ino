@@ -63,8 +63,8 @@ unsigned int battery_level = 0;
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 
-char  menu_select = 1;     // Currently elected menu item
-
+int  menu_select = 1;     // Currently elected menu item
+char ** current_menu;
 
 // Define the number of samples to keep track of.  The higher the number,
 // the more the readings will be smoothed, but the slower the output will
@@ -151,24 +151,13 @@ void setup(void) {
 	for (int thisReading = 0; thisReading < numReadings; thisReading++)
 		readings[thisReading] = 0;
 	
+	current_menu = Mainmenu;
+
 	}
 
 void loop() {
-	// Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
 
-	//float voltage = analogRead(BATTERY_IN) * (7.4 / 4095.0);
-	
-	//battery_level = map(analogRead(BATTERY_IN), 0, 4095, 0, 100);
-
-	//Serial.println("A0 Read in:");
-	//Serial.print(battery_level);
-	//Serial.println("%");
 	SmoothBatteryLevel();
-
-
-
-
-
 	UpdateBattery();
 
 	unsigned long interrupt_time = millis();
@@ -180,24 +169,13 @@ void loop() {
 		UpdateSteps();
 		//portraitLandscapeHandler();
 		last_interrupt_time = interrupt_time;
-
 	}
 
-	/* tap support
-	if (tapHandler() == 1){
-		PokePet();
-	}
-	*/
 	if (save_steps_time - last_step_save_time > 5000){
+		Serial.print("Now saving steps: ");
+		Serial.println(stepsTaken);
 		writeUint(0, stepsTaken);
 		last_step_save_time = save_steps_time;
-		Serial.println("Now saving steps: ");
-		Serial.println(stepsTaken);
-	}
-
-
-	if (battery_level < 0) {
-		battery_level = 100;
 	}
 
 	if (!disableClock){
@@ -206,8 +184,10 @@ void loop() {
 	
 	if (menuFlag && updateGUI) {		//displays menu if Pet is being shown
 		ClearMainScreen();
-		tftMenuInit();                  // Redraw the Menu
-		tftMenuSelect(menu_select);     // Highlight the current menu item
+		//goes to main menu every time
+		//current_menu = Mainmenu;
+		tftMenuInit(current_menu);                  // Redraw the Menu
+		tftMenuSelect(menu_select, current_menu);     // Highlight the current menu item
 		beep(100);
 		updateGUI = false;
 	}
@@ -223,19 +203,24 @@ void loop() {
 	}
 
 	if (digitalRead(BTN2) && menuFlag) {		//does nothing if no menu present
+		Serial.println("BTN2 Pressed");
 		// Down
 		// move down one menu item, if at bottom wrap to top
 		beep(100);
-		if (menu_select<numMenu) tftMenuSelect(menu_select + 1);
-		else tftMenuSelect(1);
+		if (menu_select < getArraySize(current_menu)){
+			tftMenuSelect(menu_select + 1, current_menu);
+		}else{ 
+			tftMenuSelect(1, current_menu); 
+		}
 		
 	 }
 	if (digitalRead(BTN3)){
+		Serial.println("BTN3 Pressed");
 		animatePetFlag = true;
 		if (menuFlag){ //if handling Menu context
-			menu_func[menu_select]();       // Call the appropriate menu function from array
-			delay(1000); //wait a bit
-			initGUI(); //redraw GUI
+			CallMenuFunction(menu_select);       // Call the appropriate menu function from array
+			//delay(1000); //wait a bit
+			//initGUI(); //redraw GUI
 			updateGUI = true;
 			animatePetFlag = false;
 		}
@@ -250,7 +235,6 @@ void loop() {
 
 }
 void SmoothBatteryLevel(){
-
 	// subtract the last reading:
 	total = total - readings[iindex];
 	// read from the sensor:  
@@ -268,8 +252,8 @@ void SmoothBatteryLevel(){
 	// calculate the average:
 	average = total / numReadings;
 	// send it to the computer as ASCII digits
-	Serial.println("Average: ");
-	Serial.println(average);
+	//Serial.println("Average: ");
+	//Serial.println(average);
 	
 	battery_level = map(average, 0, 4095, 0, 100);
 
@@ -289,6 +273,8 @@ void PokePet(void){
 }
 
 void setMenuFlag(void){
+	Serial.println("BTN1 Pressed");
+
 	static unsigned long last_interrupt_time = 0;
 	unsigned long interrupt_time = millis();
 	// If interrupts come faster than 200ms, assume it's a bounce and ignore
@@ -301,6 +287,8 @@ void setMenuFlag(void){
 }
 
 void setBLFlag(void){
+	Serial.println("BTN4 Pressed");
+
 	static unsigned long last_interrupt_time = 0;
 	unsigned long interrupt_time = millis();
 	// If interrupts come faster than 200ms, assume it's a bounce and ignore
@@ -332,6 +320,7 @@ void RunInitTests(void){
 	if (!initEEPROM()){
 		DebugMessage("EEPROM init: OK");
 		Serial.println("EEPROM init: OK");
+		EEPROM_available = true;
 	}
 	else{
 		DebugMessage("EEPROM init: FAILED");
@@ -346,6 +335,9 @@ void RunInitTests(void){
 		// following line sets the RTC to the date & time this sketch was compiled
 		rtc.adjust(DateTime(__DATE__, __TIME__));
 		RTC_available = false;
+	}
+	else{
+		RTC_available = true;
 	}
 
 	initMMA8452(SCALE, DATARATE); //Test and intialize the MMA8452

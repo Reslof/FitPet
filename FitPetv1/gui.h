@@ -86,5 +86,5 @@ void ClearMainScreen(void);
 void EraseBMP(int x, int y);
 void displayMenu(void);
 void DrawMenuItem(char * item, int BG_COLOR = S6D02A1_BLACK);
-void DrawMenuTitle(char * title, char *subtitle);
+void DrawMenuTitle(char* menu[]);
 #endif

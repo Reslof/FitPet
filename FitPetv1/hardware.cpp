@@ -112,6 +112,7 @@ void initMMA8452(byte fsr, byte dataRate)
 	{
 		Serial.println("MMA8452Q is online.");
 		DebugMessage("Accel init: OK");
+		ACCEL_available = true;
 	}
 	else
 	{
