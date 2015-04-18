@@ -45,4 +45,12 @@ void dispGoal(void);
 void dispNxtTrick(void);
 void dispStepsLVLUP(void);
 
+void dispFeedCost(void);
+void dispPlayCost(void);
+void dispTrickCost(void);
+void dispSleepCost(void);
+void dispCleanCost(void);
+
+
+
 #endif

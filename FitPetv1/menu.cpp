@@ -24,7 +24,7 @@ char* Petmenu[] = { "PET MENU",
 	"Health         ",
 	"Mood           ",
 	"Personality    ",
-	"<- Main Menu",
+	"<- Main Menu   ",
 	NULL};
 
 MenuFuncPtr Petmenu_func[] = { 0,
@@ -34,13 +34,13 @@ MenuFuncPtr Petmenu_func[] = { 0,
 	goToMainMenu };
 
 char* Interactmenu[] = { "INTERACT MENU",
-	"Feed",
-	"Play",
-	"Trick",
-	"Sleep",
-	"Clean",
-	"Options",
-	"<- Main Menu",
+	"Feed           ",
+	"Play           ",
+	"Trick          ",
+	"Sleep          ",
+	"Clean          ",
+	"Options        ",
+	"<- Main Menu   ",
 	NULL };
 
 MenuFuncPtr Interactmenu_func[] = { 0,
@@ -54,14 +54,14 @@ MenuFuncPtr Interactmenu_func[] = { 0,
 	};
 
 char* Statsmenu[] = { "STATS MENU",
-	"Steps Taken",
-	"Goal",
-	"Next Trick",
+	"Steps Taken    ",
+	"Goal           ",
+	"Next Trick     ",
 	"Steps to LVL UP",
-	"<- Main Menu",
+	"<- Main Menu   ",
 	NULL };
-MenuFuncPtr Statsmenu_func[]
-	{0,
+
+MenuFuncPtr Statsmenu_func[] = {0,
 	dispStepsTaken,
 	dispGoal,
 	dispNxtTrick,
@@ -69,14 +69,22 @@ MenuFuncPtr Statsmenu_func[]
 	goToMainMenu
 	};
 
-
-
-
-
-
-
-
-
+char* Costmenu[] = { "COSTS MENU",
+	"Feed Cost      ",
+	"Play Cost      ",
+	"Trick Cost     ",
+	"Sleep Cost     ",
+	"Clean Cost     ",
+	"<- Main Menu   ",
+	NULL };
+MenuFuncPtr Costmenu_func[] = {0,
+	dispFeedCost,
+	dispPlayCost,
+	dispTrickCost,
+	dispSleepCost,
+	dispCleanCost,
+	goToMainMenu
+	};
 
 void goToMainMenu(void){
 	current_menu = Mainmenu;
@@ -209,9 +217,9 @@ void dispStatsMenu(void)
 void dispActionCostMenu(void)
 {
 	menu_select = 1;
-	//tftMenuInit(ActionCostmenu);                  // Redraw the Menu
-	//tftMenuSelect(menu_select, ActionCostmenu);     // Highlight the current menu item
-	//current_menu = ActionCostmenu;
+	tftMenuInit(Costmenu);                  // Redraw the Menu
+	tftMenuSelect(menu_select, Costmenu);     // Highlight the current menu item
+	current_menu = Costmenu;
 }
 
 
@@ -253,25 +261,167 @@ void dispPetPersonality(void){
 //************************************************************
 void dispFeed(void){
 	Serial.println("This is the dispFeed Menu");
+	char * text = "This is the Feed Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
 
 }
 void dispPlay(void){
 	Serial.println("This is the dispPlay Menu");
+	char * text = "This is the Play Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
 
 }
 void dispTrick(void){
 	Serial.println("This is the dispTrick Menu");
+	char * text = "This is the Trick Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
 
 }
 void dispSleep(void){
 	Serial.println("This is the dispSleep Menu");
+	char * text = "This is the Sleep Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
 
 }
 void dispClean(void){
 	Serial.println("This is the dispClean Menu");
+	char * text = "This is the Clean Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
 
 }
 void dispOptions(void){
 	Serial.println("This is the dispOptions Menu");
+	char * text = "This is the Options Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
 
 }
+
+void dispStepsTaken(void){
+	Serial.println("This is the dispStepsTaken Menu");
+	char * text = "This is the Steps Taken Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
+}
+
+void dispGoal(void){
+	Serial.println("This is the dispGoal Menu");
+	char * text = "This is the Goal Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
+}
+
+void dispNxtTrick(void){
+	Serial.println("This is the dispNextTrick Menu");
+	char * text = "This is the NxtTrick Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
+}
+
+void dispStepsLVLUP(void){
+	Serial.println("This is the dispStepsLVLUP Menu");
+	char * text = "This is the LVLUP Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
+}
+
+void dispFeedCost(void){
+	Serial.println("This is the dispFeedCost Menu");
+	char * text = "This is the FeedCost Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
+}
+
+void dispPlayCost(void){
+	Serial.println("This is the dispOptions Menu");
+	char * text = "This is the Options Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
+}
+
+void dispTrickCost(void){
+	Serial.println("This is the dispTrickCost Menu");
+	char * text = "This is the TrickCost Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
+}
+
+void dispSleepCost(void){
+	Serial.println("This is the dispSleepCost Menu");
+	char * text = "This is the Sleep Cost Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
+}
+
+void dispCleanCost(void){
+	Serial.println("This is the dispCleanCost Menu");
+	char * text = "This is the CleanCost Menu";
+	tft.setCursor(0, 27);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextWrap(true);
+	tft.println(text);
+	delay(2000);
+	ClearMainScreen();
+}
+
