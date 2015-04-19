@@ -53,13 +53,15 @@ boolean screenON = true;
 boolean TFTBLFlag = true;
 boolean calibrateFlag = true;
 boolean EEPROM_available, RTC_available, ACCEL_available = true;
+boolean enableSysMessage = true;
 
 float xcal, ycal, zcal, prevAcc = 0.0;
 long last_interrupt_time = 0;        // will store last time LED was updated
 long last_step_save_time = 0;
+long last_message_time = 0;
 unsigned int stepsTaken = 0;
 unsigned int battery_level = 0;
-
+char *SysMessage = "";
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 
@@ -151,17 +153,22 @@ void setup(void) {
 	for (int thisReading = 0; thisReading < numReadings; thisReading++)
 		readings[thisReading] = 0;
 	
-	current_menu = Mainmenu;
+	current_menu = Mainmenu; //Starts at main menu.
+	SysMessage = "This is a test.";
 
 	}
 
 void loop() {
+	unsigned long sysMessageTime = millis();
 
-	SmoothBatteryLevel();
-	UpdateBattery();
+	SystemMessage(SysMessage); //Prints at bottom of screen in case of connection, user action etc.
+
+	if (sysMessageTime - last_message_time > 5000){
+		EraseSysMessage();
+		last_message_time = sysMessageTime;
+	}
 
 	unsigned long interrupt_time = millis();
-	unsigned long save_steps_time = millis();
 
 	// If interrupts come faster than 200ms, assume it's a bounce and ignore
 	if (interrupt_time - last_interrupt_time > 100){
@@ -171,12 +178,17 @@ void loop() {
 		last_interrupt_time = interrupt_time;
 	}
 
+	unsigned long save_steps_time = millis();
+
 	if (save_steps_time - last_step_save_time > 5000){
 		Serial.print("Now saving steps: ");
 		Serial.println(stepsTaken);
 		writeUint(0, stepsTaken);
 		last_step_save_time = save_steps_time;
 	}
+
+	SmoothBatteryLevel();
+	UpdateBattery();
 
 	if (!disableClock){
 		UpdateClock();					//Updates clock if in Pet context

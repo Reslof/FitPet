@@ -1,9 +1,7 @@
-#define INCLUDE_SPRITES 0//CHANGE THIS VALUE TO 1 IN ORDER TO USE SPRITES
+#define INCLUDE_SPRITES 1//CHANGE THIS VALUE TO 1 IN ORDER TO USE SPRITES
 
 #ifndef GUI_H
 #define GUI_H
-
-
 
 #include <TFT_S6D02A1\TFT_S6D02A1.h>
 #include <RTCdue\RTCdue.h>
@@ -70,12 +68,16 @@ void ClearExpression(void);
 #endif
 
 extern boolean disableClock;
+extern boolean enableSysMessage;
 extern unsigned int stepsTaken;
 extern unsigned int battery_level;
+extern char *SysMessage;
 
 int initGUI(void);
 void DebugMessage(char *message);
 void DebugMessage(String message);
+void SystemMessage(char *message);
+void EraseSysMessage(void);
 void LoadingScreenCircles(void);
 void LoadingScreenIcon(void);
 void PrintVariable(unsigned char variable, int representation);

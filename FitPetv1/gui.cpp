@@ -225,6 +225,24 @@ void DebugMessage(String message){
 		previousLine = 0;
 	}
 }
+
+void SystemMessage(char *message){
+	/// <summary>
+	/// Prints text to screen. Automatically wraps around main box
+	/// </summary>
+	tft.setTextColor(S6D02A1_GREEN, S6D02A1_BLACK);
+	tft.setCursor(0, (MAIN_SCREEN_HEIGHT+15));
+	tft.println(message);
+	tft.setTextColor(S6D02A1_WHITE, S6D02A1_BLACK);
+}
+
+void EraseSysMessage(void){
+	tft.setTextColor(S6D02A1_BLACK, S6D02A1_BLACK);
+	tft.setCursor(0, (MAIN_SCREEN_HEIGHT + 15));
+	tft.println(SysMessage);
+	tft.setTextColor(S6D02A1_WHITE, S6D02A1_BLACK);
+	SysMessage = "";
+}
 void PrintVariable(unsigned char variable, int representation){
 	/// <summary>
 	/// Prints the ASCII code or HEX/DEC value of variable

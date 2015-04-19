@@ -77,6 +77,7 @@ char* Costmenu[] = { "COSTS MENU",
 	"Clean Cost     ",
 	"<- Main Menu   ",
 	NULL };
+
 MenuFuncPtr Costmenu_func[] = {0,
 	dispFeedCost,
 	dispPlayCost,
@@ -88,6 +89,7 @@ MenuFuncPtr Costmenu_func[] = {0,
 
 void goToMainMenu(void){
 	current_menu = Mainmenu;
+	menu_select = 1;
 }
 // It's usefult to know the number of menu items without hardcoding it
 // We can calculate it thus.. (subtract 1 for the menu heading)
@@ -117,11 +119,9 @@ void CallMenuFunction(int select){
 	}
 	if (current_menu == Mainmenu && select == 4){ //Go To Action Cost menu
 		Serial.println("Going to Action Cost menu");
-		//current_menu = Actioncostmenu;
+		current_menu = Costmenu;
 		done = true;
 	}
-
-
 
 	if (current_menu == Petmenu && !done){ //Pet menu handler
 		Serial.println("Selecting Pet action...");
@@ -129,10 +129,22 @@ void CallMenuFunction(int select){
 		done = true;
 	}
 
-	if (current_menu == Petmenu && select == 4){ //<- Go back
-		current_menu = Mainmenu;
-		menu_select = 1;
+	if (current_menu == Interactmenu && !done){ //Interact menu handler
+		Serial.println("Selecting Pet action...");
+		Interactmenu_func[select]();
+		done = true;
+	}
 
+	if (current_menu == Statsmenu && !done){ //Stats menu handler
+		Serial.println("Selecting Pet action...");
+		Statsmenu_func[select]();
+		done = true;
+	}
+
+	if (current_menu == Costmenu && !done){ //Action Cost menu handler
+		Serial.println("Selecting Pet action...");
+		Costmenu_func[select]();
+		done = true;
 	}
 		
 }
@@ -260,6 +272,7 @@ void dispPetPersonality(void){
 }
 //************************************************************
 void dispFeed(void){
+	ClearMainScreen();
 	Serial.println("This is the dispFeed Menu");
 	char * text = "This is the Feed Menu";
 	tft.setCursor(0, 27);
@@ -271,6 +284,7 @@ void dispFeed(void){
 
 }
 void dispPlay(void){
+	ClearMainScreen();
 	Serial.println("This is the dispPlay Menu");
 	char * text = "This is the Play Menu";
 	tft.setCursor(0, 27);
@@ -282,6 +296,7 @@ void dispPlay(void){
 
 }
 void dispTrick(void){
+	ClearMainScreen();
 	Serial.println("This is the dispTrick Menu");
 	char * text = "This is the Trick Menu";
 	tft.setCursor(0, 27);
@@ -293,6 +308,7 @@ void dispTrick(void){
 
 }
 void dispSleep(void){
+	ClearMainScreen();
 	Serial.println("This is the dispSleep Menu");
 	char * text = "This is the Sleep Menu";
 	tft.setCursor(0, 27);
@@ -304,6 +320,7 @@ void dispSleep(void){
 
 }
 void dispClean(void){
+	ClearMainScreen();
 	Serial.println("This is the dispClean Menu");
 	char * text = "This is the Clean Menu";
 	tft.setCursor(0, 27);
@@ -315,6 +332,7 @@ void dispClean(void){
 
 }
 void dispOptions(void){
+	ClearMainScreen();
 	Serial.println("This is the dispOptions Menu");
 	char * text = "This is the Options Menu";
 	tft.setCursor(0, 27);
@@ -327,6 +345,7 @@ void dispOptions(void){
 }
 
 void dispStepsTaken(void){
+	ClearMainScreen();
 	Serial.println("This is the dispStepsTaken Menu");
 	char * text = "This is the Steps Taken Menu";
 	tft.setCursor(0, 27);
@@ -338,6 +357,7 @@ void dispStepsTaken(void){
 }
 
 void dispGoal(void){
+	ClearMainScreen();
 	Serial.println("This is the dispGoal Menu");
 	char * text = "This is the Goal Menu";
 	tft.setCursor(0, 27);
@@ -349,6 +369,7 @@ void dispGoal(void){
 }
 
 void dispNxtTrick(void){
+	ClearMainScreen();
 	Serial.println("This is the dispNextTrick Menu");
 	char * text = "This is the NxtTrick Menu";
 	tft.setCursor(0, 27);
@@ -360,6 +381,7 @@ void dispNxtTrick(void){
 }
 
 void dispStepsLVLUP(void){
+	ClearMainScreen();
 	Serial.println("This is the dispStepsLVLUP Menu");
 	char * text = "This is the LVLUP Menu";
 	tft.setCursor(0, 27);
@@ -371,6 +393,7 @@ void dispStepsLVLUP(void){
 }
 
 void dispFeedCost(void){
+	ClearMainScreen();
 	Serial.println("This is the dispFeedCost Menu");
 	char * text = "This is the FeedCost Menu";
 	tft.setCursor(0, 27);
@@ -382,6 +405,7 @@ void dispFeedCost(void){
 }
 
 void dispPlayCost(void){
+	ClearMainScreen();
 	Serial.println("This is the dispOptions Menu");
 	char * text = "This is the Options Menu";
 	tft.setCursor(0, 27);
@@ -393,6 +417,7 @@ void dispPlayCost(void){
 }
 
 void dispTrickCost(void){
+	ClearMainScreen();
 	Serial.println("This is the dispTrickCost Menu");
 	char * text = "This is the TrickCost Menu";
 	tft.setCursor(0, 27);
@@ -404,6 +429,7 @@ void dispTrickCost(void){
 }
 
 void dispSleepCost(void){
+	ClearMainScreen();
 	Serial.println("This is the dispSleepCost Menu");
 	char * text = "This is the Sleep Cost Menu";
 	tft.setCursor(0, 27);
@@ -415,6 +441,7 @@ void dispSleepCost(void){
 }
 
 void dispCleanCost(void){
+	ClearMainScreen();
 	Serial.println("This is the dispCleanCost Menu");
 	char * text = "This is the CleanCost Menu";
 	tft.setCursor(0, 27);
