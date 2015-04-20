@@ -206,7 +206,8 @@ void UpdateClock(void) {
 }
 void ClearStepsScreen(void){
 	tft.setCursor(3, 15);
-	tft.print("          ");
+	//tft.print("          ");
+	tft.fillRect(3, 15, GUI_BOX_WIDTH-5, GUI_BOX_HEIGHT-17, S6D02A1_BLACK);
 }
 
 void UpdateSteps(void) {

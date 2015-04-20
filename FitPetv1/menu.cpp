@@ -344,7 +344,7 @@ void dispFeed(void){
 	
 	signed int cost = AStepsTaken - FeedCost;
 	
-	if (cost > 0){
+	if (cost >= 0){
 		tft.println("You feed your pet!");
 		tft.println("");
 		tft.setTextColor(S6D02A1_GREEN);
@@ -355,7 +355,7 @@ void dispFeed(void){
 		tft.print(FeedCost);
 		tft.setTextColor(S6D02A1_GREEN);
 
-		tft.print(" steps.");
+		tft.print("   steps.");
 		tft.println("");
 
 		tft.print("Steps remaining: ");
@@ -382,8 +382,9 @@ void dispFeed(void){
 
 
 	delay(5000);
-	ClearMainScreen();
 	ClearStepsScreen();
+	ClearMainScreen();
+	
 
 }
 void dispPlay(void){
@@ -394,7 +395,7 @@ void dispPlay(void){
 
 	signed int cost = AStepsTaken - PlayCost;
 
-	if (cost > 0){
+	if (cost >= 0){
 		tft.println("You play with your pet!");
 		tft.println("");
 		tft.setTextColor(S6D02A1_GREEN);
@@ -405,7 +406,7 @@ void dispPlay(void){
 		tft.print(PlayCost);
 		tft.setTextColor(S6D02A1_GREEN);
 
-		tft.print(" steps.");
+		tft.print("   steps.");
 		tft.println("");
 
 		tft.print("Steps remaining: ");
@@ -431,8 +432,9 @@ void dispPlay(void){
 	}
 
 	delay(2000);
-	ClearMainScreen();
 	ClearStepsScreen();
+	ClearMainScreen();
+	
 
 }
 void dispTrick(void){
@@ -443,7 +445,7 @@ void dispTrick(void){
 
 	signed int cost = AStepsTaken - TrickCost;
 
-	if (cost > 0){
+	if (cost >= 0){
 		tft.println("Your pet does a trick!");
 		tft.println("");
 		tft.setTextColor(S6D02A1_GREEN);
@@ -454,7 +456,7 @@ void dispTrick(void){
 		tft.print(TrickCost);
 		tft.setTextColor(S6D02A1_GREEN);
 
-		tft.print(" steps.");
+		tft.print("   steps.");
 		tft.println("");
 
 		tft.print("Steps remaining: ");
@@ -480,8 +482,9 @@ void dispTrick(void){
 	}
 
 	delay(2000);
-	ClearMainScreen();
 	ClearStepsScreen();
+	ClearMainScreen();
+	
 
 }
 void dispSleep(void){
@@ -492,7 +495,7 @@ void dispSleep(void){
 
 	signed int cost = AStepsTaken - SleepCost;
 
-	if (cost > 0){
+	if (cost >= 0){
 		tft.println("Your pet goes to sleep!");
 		tft.println("");
 		tft.setTextColor(S6D02A1_GREEN);
@@ -503,7 +506,7 @@ void dispSleep(void){
 		tft.print(SleepCost);
 		tft.setTextColor(S6D02A1_GREEN);
 
-		tft.print(" steps.");
+		tft.print("   steps.");
 		tft.println("");
 
 		tft.print("Steps remaining: ");
@@ -529,8 +532,9 @@ void dispSleep(void){
 	}
 
 	delay(2000);
-	ClearMainScreen();
 	ClearStepsScreen();
+	ClearMainScreen();
+	
 
 }
 void dispClean(void){
@@ -541,7 +545,7 @@ void dispClean(void){
 
 	signed int cost = AStepsTaken - CleanCost;
 
-	if (cost > 0){
+	if (cost >= 0){
 		tft.println("You clean your pet!");
 		tft.println("");
 		tft.setTextColor(S6D02A1_GREEN);
@@ -552,7 +556,7 @@ void dispClean(void){
 		tft.print(CleanCost);
 		tft.setTextColor(S6D02A1_GREEN);
 
-		tft.print(" steps.");
+		tft.print("   steps.");
 		tft.println("");
 
 		tft.print("Steps remaining: ");
@@ -578,8 +582,8 @@ void dispClean(void){
 	}
 
 	delay(2000);
-	ClearMainScreen();
 	ClearStepsScreen();
+	ClearMainScreen();
 
 }
 void dispOptions(void){
