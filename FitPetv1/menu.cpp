@@ -650,7 +650,7 @@ void dispNxtTrick(void){
 		tft.print(" steps until next trick!");
 	}
 	else{
-		tft.println("You're next trick is available!");
+		tft.println("Your next trick is available!");
 	}
 	delay(5000);
 	resetText();
