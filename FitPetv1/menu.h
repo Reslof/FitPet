@@ -28,9 +28,7 @@ void dispStats(void);
 void dispActionCost(void);
 
 void dispPetHealth(void);
-#if INCLUDE_SPRITES
 void dispPetMood(void);
-#endif
 void dispPetPersonality(void);
 
 void dispFeed(void);

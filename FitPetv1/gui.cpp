@@ -203,6 +203,12 @@ void UpdateClock(void) {
 		Serial.println(now.year(), DEC);
 		*/
 	}
+	else{
+		tft.setCursor(34, 138);
+		tft.setTextColor(S6D02A1_RED);
+		tft.println("NO CLOCK DETECTED");
+		resetText();
+	}
 }
 void ClearStepsScreen(void){
 	tft.setCursor(3, 15);

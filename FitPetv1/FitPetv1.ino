@@ -64,6 +64,7 @@ unsigned int battery_level = 0;
 char *SysMessage = "";
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
+boolean doubleStepsFlag = false;
 
 int currentPet = 0;
 int  menu_select = 1;     // Currently elected menu item
@@ -340,7 +341,7 @@ void RunInitTests(void){
 
 	initMMA8452(SCALE, DATARATE); //Test and intialize the MMA8452
 
-	//delay(3000); //wait
+	delay(3000); //wait
 	ClearMainScreen();
 }
 void HandleBTCommands(void){//handles Bluetooth commands!!!! 
@@ -352,6 +353,7 @@ void HandleBTCommands(void){//handles Bluetooth commands!!!!
 	if (inputString.equalsIgnoreCase(Pet)){
 		SysMessage="Pet nearby!";
 		SystemMessage(SysMessage);
+		doubleStepsFlag = true;
 	}
 
 	if (inputString.equalsIgnoreCase("setsteps")){
@@ -402,6 +404,9 @@ int UpdateAccel(void){
 		if (acceleration_mag - prevAcc > 0.7){
 			stepsTaken++;
 			AStepsTaken++;
+			if (doubleStepsFlag){
+				AStepsTaken++;
+			}
 		}
 
 		prevAcc = acceleration_mag;
