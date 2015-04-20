@@ -83,6 +83,7 @@ int average = 0;                // the average
 unsigned long sysMessageTime;
 
 void setup(void) {
+
 	Serial.begin(9600);
 	Serial.println("Bluetooth ON");
 
@@ -147,6 +148,10 @@ void setup(void) {
 	}
 
 void loop() {
+
+	Serial.write("petPresent\r\n");
+
+
 	sysMessageTime = millis();
 
 	if (sysMessageTime - last_message_time > 8000){
@@ -227,8 +232,10 @@ void loop() {
 			animatePetFlag = false;
 		}
 		if (!menuFlag && animatePetFlag){ //if handling Pet context
+#if INCLUDE_SPRITES
 			currentPet = random(0, 4);
 			PokePet(random(0,11));
+#endif
 		}
 	}
 		
@@ -337,28 +344,20 @@ void RunInitTests(void){
 	ClearMainScreen();
 }
 void HandleBTCommands(void){//handles Bluetooth commands!!!! 
-	String clear = "clr\n";
+	String Pet = "petPresent\r\n";
 	String read = "read\n";
 	String loading = "loading\n";
 	String showPet = "pet\n";
 
-	DebugMessage(inputString);
-	if (inputString.equalsIgnoreCase(clear)){
-		ClearMainScreen();
+	if (inputString.equalsIgnoreCase(Pet)){
+		SysMessage="Pet nearby!";
+		SystemMessage(SysMessage);
 	}
-	if (inputString.equalsIgnoreCase(loading)){
-		animatePetFlag = !animatePetFlag;
-	}
-	if (inputString.equalsIgnoreCase(showPet)){
-		menuFlag = !menuFlag;
-	}
-	if (inputString.equalsIgnoreCase(clear)){
-		ClearMainScreen();
-	}
-	if (inputString.equalsIgnoreCase(read)){
 
-		unsigned char EEPROMtest = readEEPROM(EEPROM, 0); //reads EEPROM value
-		PrintVariable(EEPROMtest, DEC);
+	if (inputString.equalsIgnoreCase("setsteps")){
+		writeUint(0, 0x3E8); //stores 1000 steps
+		writeUint(10, 0x3E8); //stores 1000 steps	
+		Serial.println("Stored 1000 steps in EEPROM");
 	}
 	// clear the string:
 	inputString = "";

@@ -37,7 +37,9 @@ char* Petmenu[] = { "PET MENU",
 
 MenuFuncPtr Petmenu_func[] = { 0,
 	dispPetHealth,
+#if INCLUDE_SPRITES
 	dispPetMood,
+#endif
 	dispPetPersonality,
 	goToMainMenu };
 
@@ -284,7 +286,10 @@ void dispPetHealth(void){
 	char * text = "Pet Health:";
 
 	int randHealth= random(0, 11);
+#if INCLUDE_SPRITES
+
 	DrawExpression(HEART);
+#endif
 
 	tft.setCursor(0, MIDDLE_MAIN_SCREEN_HEIGHT);
 	tft.setTextColor(S6D02A1_WHITE);
@@ -301,6 +306,8 @@ void dispPetHealth(void){
 	delay(2000);
 	ClearMainScreen();
 }
+#if INCLUDE_SPRITES
+
 void dispPetMood(void){
 	ClearMainScreen();	
 	Serial.println("This is the Pet Mood Menu");
@@ -318,6 +325,7 @@ void dispPetMood(void){
 
 	SystemMessage(SysMessage); //Prints at bottom of screen in case of connection, user action etc.
 }
+#endif
 void dispPetPersonality(void){
 	ClearMainScreen();
 	Serial.println("This is the Pet Personality Menu");
