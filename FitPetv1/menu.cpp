@@ -3,11 +3,11 @@
 
 unsigned int FeedCost = 200;
 unsigned int PlayCost = 600;
-unsigned int TrickCost = 600;
+unsigned int TrickCost = 5000;
 unsigned int SleepCost = 400;
 unsigned int CleanCost = 500;
 unsigned int stepsGoal = 10000;
-unsigned int currentLevel; 
+unsigned int currentLevel = 1; 
 
 /* For those of you interested in creating a Menu system, we have defined
 two arrays here. One holds the Menu Title and menu headings, and the other
@@ -383,7 +383,7 @@ void dispFeed(void){
 	}
 
 
-	delay(5000);
+	delay(3000);
 	ClearStepsScreen();
 	ClearMainScreen();
 	
@@ -433,7 +433,7 @@ void dispPlay(void){
 		tft.print("   more steps to perform that action!");
 	}
 
-	delay(2000);
+	delay(3000);
 	ClearStepsScreen();
 	ClearMainScreen();
 	
@@ -483,7 +483,7 @@ void dispTrick(void){
 		tft.print("   more steps to perform that action!");
 	}
 
-	delay(2000);
+	delay(3000);
 	ClearStepsScreen();
 	ClearMainScreen();
 	
@@ -533,7 +533,7 @@ void dispSleep(void){
 		tft.print("   more steps to perform that action!");
 	}
 
-	delay(2000);
+	delay(3000);
 	ClearStepsScreen();
 	ClearMainScreen();
 	
@@ -583,7 +583,7 @@ void dispClean(void){
 		tft.print("   more steps to perform that action!");
 	}
 
-	delay(2000);
+	delay(3000);
 	ClearStepsScreen();
 	ClearMainScreen();
 
@@ -596,7 +596,17 @@ void dispOptions(void){
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
 	tft.println(text);
-	delay(2000);
+	tft.println("");
+	tft.setTextColor(S6D02A1_GREEN);
+
+	tft.println("Options: ");
+	tft.println("Choose Pet");
+	tft.println("Set the Time");
+	tft.println("Bluetooth Options");
+	tft.println("RESET");
+
+	delay(3000);
+	resetText();
 	ClearMainScreen();
 
 }
@@ -614,7 +624,7 @@ void dispStepsTaken(void){
 	tft.println(" ");
 	tft.print(stepsTaken);
 	tft.print(" Steps");
-	delay(5000);
+	delay(3000);
 	resetText();
 	ClearMainScreen();
 }
@@ -629,8 +639,19 @@ void dispGoal(void){
 	tft.setTextColor(S6D02A1_CYAN);
 	tft.setTextSize(2);
 	tft.println(stepsGoal);
+	tft.println("");
+	tft.setTextSize(0);
+	tft.println("You need ");
+	tft.setTextColor(S6D02A1_RED);
+	tft.print(abs((signed int)(stepsGoal - stepsTaken)));
+	tft.setTextColor(S6D02A1_CYAN);
+	tft.println(" more steps today!");
+	tft.println("");
+	tft.setTextColor(S6D02A1_MAGENTA);
+	tft.print("Why don't you go for a walk?");
+
 	resetText();
-	delay(5000);
+	delay(3000);
 	ClearMainScreen();
 }
 
@@ -642,17 +663,20 @@ void dispNxtTrick(void){
 	tft.setTextWrap(true);
 	int nextTrick = 0;
 
+	tft.println("Your pet currently   knows only 1 trick.");
+	tft.println("");
+
 	if (stepsTaken < TrickCost){
 		nextTrick = TrickCost - stepsTaken;
 		tft.setTextColor(S6D02A1_RED);
 		tft.print(nextTrick);
 		tft.setTextColor(S6D02A1_WHITE);
-		tft.print(" steps until next trick!");
+		tft.print(" steps until nexttrick!");
 	}
 	else{
 		tft.println("Your next trick is available!");
 	}
-	delay(5000);
+	delay(3000);
 	resetText();
 	ClearMainScreen();
 }
@@ -660,12 +684,26 @@ void dispNxtTrick(void){
 void dispStepsLVLUP(void){
 	ClearMainScreen();
 	Serial.println("This is the dispStepsLVLUP Menu");
-	char * text = "This is the LVLUP Menu";
+	char * text = "Your pet is currentlylevel ";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
-	tft.println(text);
-	delay(2000);
+	tft.print(text);
+	tft.setTextColor(S6D02A1_RED);
+
+	tft.print(currentLevel);
+	tft.setTextColor(S6D02A1_WHITE);
+
+	tft.println("");
+	tft.println("");
+
+	tft.print("You need ");
+	tft.print(abs(((signed int)(stepsTaken - TrickCost))));
+	tft.println(" more steps to level up.");
+
+
+
+	delay(3000);
 	ClearMainScreen();
 }
 
@@ -682,7 +720,7 @@ void dispFeedCost(void){
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.println(text2);
-	delay(5000);
+	delay(3000);
 	resetText();
 	ClearMainScreen();
 }
@@ -699,7 +737,7 @@ void dispPlayCost(void){
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.println(text2);
-	delay(5000);
+	delay(3000);
 	resetText();
 	ClearMainScreen();
 }
@@ -716,7 +754,7 @@ void dispTrickCost(void){
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.println(text2);
-	delay(5000);
+	delay(3000);
 	resetText();
 	ClearMainScreen();
 }
@@ -733,7 +771,7 @@ void dispSleepCost(void){
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.println(text2);
-	delay(5000);
+	delay(3000);
 	resetText();
 	ClearMainScreen();
 }
@@ -750,7 +788,7 @@ void dispCleanCost(void){
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.println(text2);
-	delay(5000);
+	delay(3000);
 	resetText();
 	ClearMainScreen();
 }
