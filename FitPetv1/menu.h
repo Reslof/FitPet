@@ -48,4 +48,6 @@ void dispPlayCost(void);
 void dispTrickCost(void);
 void dispSleepCost(void);
 void dispCleanCost(void);
+
+void resetText(void);
 #endif
