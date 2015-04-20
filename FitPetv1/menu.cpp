@@ -595,15 +595,21 @@ void dispOptions(void){
 
 }
 
+
 void dispStepsTaken(void){
 	ClearMainScreen();
 	Serial.println("This is the dispStepsTaken Menu");
-	char * text = "This is the Steps Taken Menu";
+	char * text = "Current Steps:";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
 	tft.println(text);
-	delay(2000);
+	delay(500);
+	tft.setTextSize(2);
+	tft.println(stepsTaken + "Steps");
+	delay(5000);
+	tft.setTextSize(0);
+
 	ClearMainScreen();
 }
 
@@ -646,60 +652,89 @@ void dispStepsLVLUP(void){
 void dispFeedCost(void){
 	ClearMainScreen();
 	Serial.println("This is the dispFeedCost Menu");
-	char * text = "This is the FeedCost Menu";
+	char * text1 = "The cost of feeding  your pet is:";
+	char * text2 = "200 Steps";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
-	tft.println(text);
-	delay(2000);
+	tft.println(text1);
+	delay(1000);
+	tft.setTextSize(2);
+	tft.println(" ");
+	tft.println(text2);
+	delay(5000);
+	tft.setTextSize(0);
 	ClearMainScreen();
 }
 
 void dispPlayCost(void){
 	ClearMainScreen();
 	Serial.println("This is the dispOptions Menu");
-	char * text = "This is the Options Menu";
+	char * text1 = "The cost of playing  with your pet is:";
+	char * text2 = "600 Steps";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
-	tft.println(text);
-	delay(2000);
+	tft.println(text1);
+	delay(1000);
+	tft.setTextSize(2);
+	tft.println(" ");
+	tft.println(text2);
+	delay(5000);
+	tft.setTextSize(0);
 	ClearMainScreen();
 }
 
 void dispTrickCost(void){
 	ClearMainScreen();
 	Serial.println("This is the dispTrickCost Menu");
-	char * text = "This is the TrickCost Menu";
+	char * text1 = "The cost of having   your pet do a trick  is:";
+	char * text2 = "600 Steps";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
-	tft.println(text);
-	delay(2000);
+	tft.println(text1);
+	delay(1000);
+	tft.setTextSize(2);
+	tft.println(" ");
+	tft.println(text2);
+	delay(5000);
+	tft.setTextSize(0);
 	ClearMainScreen();
 }
 
 void dispSleepCost(void){
 	ClearMainScreen();
 	Serial.println("This is the dispSleepCost Menu");
-	char * text = "This is the Sleep Cost Menu";
+	char * text1 = "The cost of your pet sleeping is:";
+	char * text2 = "400 Steps";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
-	tft.println(text);
-	delay(2000);
+	tft.println(text1);
+	delay(1000);
+	tft.setTextSize(2);
+	tft.println(" ");
+	tft.println(text2);
+	delay(5000);
+	tft.setTextSize(0);
 	ClearMainScreen();
 }
 
 void dispCleanCost(void){
 	ClearMainScreen();
 	Serial.println("This is the dispCleanCost Menu");
-	char * text = "This is the CleanCost Menu";
+	char * text1 = "The cost of cleaning your pet is:";
+	char * text2 = "500 Steps";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
-	tft.println(text);
-	delay(2000);
+	tft.println(text1);
+	delay(1000);
+	tft.setTextSize(2);
+	tft.println(" ");
+	tft.println(text2);
+	delay(5000);
+	tft.setTextSize(0);
 	ClearMainScreen();
 }
-
