@@ -199,3 +199,7 @@ FitPetv1/Visual Micro/Compile.vmps.xml
 *.filters
 *.suo
 *.sdf
+FitPetv1/FitPetSol.sdf
+FitPetv1/FitPetv1.vcxproj
+FitPetv1/FitPetv1.vcxproj
+*.xml

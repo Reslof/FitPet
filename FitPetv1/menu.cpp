@@ -6,6 +6,8 @@ unsigned int PlayCost = 600;
 unsigned int TrickCost = 600;
 unsigned int SleepCost = 400;
 unsigned int CleanCost = 500;
+unsigned int stepsGoal = 10000;
+unsigned int currentLevel; 
 
 /* For those of you interested in creating a Menu system, we have defined
 two arrays here. One holds the Menu Title and menu headings, and the other
@@ -599,7 +601,7 @@ void dispOptions(void){
 
 }
 
-
+//Stats menu functions
 void dispStepsTaken(void){
 	ClearMainScreen();
 	Serial.println("This is the dispStepsTaken Menu");
@@ -608,36 +610,50 @@ void dispStepsTaken(void){
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
 	tft.println(text);
-	delay(500);
 	tft.setTextSize(2);
-	tft.println(stepsTaken + "Steps");
+	tft.println(" ");
+	tft.print(stepsTaken);
+	tft.print(" Steps");
 	delay(5000);
-	tft.setTextSize(0);
-
+	resetText();
 	ClearMainScreen();
 }
 
 void dispGoal(void){
 	ClearMainScreen();
 	Serial.println("This is the dispGoal Menu");
-	char * text = "This is the Goal Menu";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
-	tft.println(text);
-	delay(2000);
+	tft.println("Your current goal is:");
+	tft.setTextColor(S6D02A1_CYAN);
+	tft.setTextSize(2);
+	tft.println(stepsGoal);
+	resetText();
+	delay(5000);
 	ClearMainScreen();
 }
 
 void dispNxtTrick(void){
 	ClearMainScreen();
 	Serial.println("This is the dispNextTrick Menu");
-	char * text = "This is the NxtTrick Menu";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
-	tft.println(text);
-	delay(2000);
+	int nextTrick = 0;
+
+	if (stepsTaken < TrickCost){
+		nextTrick = TrickCost - stepsTaken;
+		tft.setTextColor(S6D02A1_RED);
+		tft.print(nextTrick);
+		tft.setTextColor(S6D02A1_WHITE);
+		tft.print(" steps until next trick!");
+	}
+	else{
+		tft.println("You're next trick is available!");
+	}
+	delay(5000);
+	resetText();
 	ClearMainScreen();
 }
 
@@ -653,6 +669,7 @@ void dispStepsLVLUP(void){
 	ClearMainScreen();
 }
 
+//ActionCost menu functions
 void dispFeedCost(void){
 	ClearMainScreen();
 	Serial.println("This is the dispFeedCost Menu");
@@ -662,12 +679,11 @@ void dispFeedCost(void){
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
 	tft.println(text1);
-	delay(1000);
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.println(text2);
 	delay(5000);
-	tft.setTextSize(0);
+	resetText();
 	ClearMainScreen();
 }
 
@@ -680,12 +696,11 @@ void dispPlayCost(void){
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
 	tft.println(text1);
-	delay(1000);
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.println(text2);
 	delay(5000);
-	tft.setTextSize(0);
+	resetText();
 	ClearMainScreen();
 }
 
@@ -698,12 +713,11 @@ void dispTrickCost(void){
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
 	tft.println(text1);
-	delay(1000);
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.println(text2);
 	delay(5000);
-	tft.setTextSize(0);
+	resetText();
 	ClearMainScreen();
 }
 
@@ -716,12 +730,11 @@ void dispSleepCost(void){
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
 	tft.println(text1);
-	delay(1000);
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.println(text2);
 	delay(5000);
-	tft.setTextSize(0);
+	resetText();
 	ClearMainScreen();
 }
 
@@ -734,11 +747,16 @@ void dispCleanCost(void){
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
 	tft.println(text1);
-	delay(1000);
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.println(text2);
 	delay(5000);
-	tft.setTextSize(0);
+	resetText();
 	ClearMainScreen();
+}
+
+// this will reset the text size and color to default 0 and white
+void resetText(void){
+	tft.setTextSize(0);
+	tft.setTextColor(S6D02A1_WHITE);
 }
