@@ -1,6 +1,12 @@
 #include "menu.h"
 #include "gui.h"
 
+unsigned int FeedCost = 200;
+unsigned int PlayCost = 600;
+unsigned int TrickCost = 600;
+unsigned int SleepCost = 400;
+unsigned int CleanCost = 500;
+
 /* For those of you interested in creating a Menu system, we have defined
 two arrays here. One holds the Menu Title and menu headings, and the other
 holds the associated function to be called. This is a great way to simplify
@@ -87,6 +93,38 @@ MenuFuncPtr Costmenu_func[] = {0,
 	goToMainMenu
 	};
 
+
+struct Moods{
+	int expression;
+	char *expression_name;
+}Moods[11] = {
+	{ 0, "Happy" },
+	{ 1, "Really Happy" },
+	{ 2, "Very Happy" },
+	{ 3, "In Love" },
+	{ 4, "Mad" },
+	{ 5, "Really Mad" },
+	{ 6, "Confused" },
+	{ 7, "Content" },
+	{ 8, "Sad" },
+	{ 9, "Surprised" },
+	{ 10, "Aloof" },
+};
+
+char *Personalities[] = { "Adventurous",
+"Classy",
+"Affectionate",
+"Brave",
+"Naughty",
+"Neat",
+"Silly",
+"Sneaky",
+"Romantic",
+"Timid",
+"Unpredictable",
+"Untidy"
+};
+
 void goToMainMenu(void){
 	current_menu = Mainmenu;
 	menu_select = 1;
@@ -94,6 +132,8 @@ void goToMainMenu(void){
 // It's usefult to know the number of menu items without hardcoding it
 // We can calculate it thus.. (subtract 1 for the menu heading)
 void CallMenuFunction(int select){
+	menu_select = 1;
+
 	boolean done = false;
 
 	Serial.println("select: ");
@@ -239,34 +279,59 @@ void dispActionCostMenu(void)
 void dispPetHealth(void){
 	ClearMainScreen();
 	Serial.println("This is the Pet Health Menu");
-	char * text = "This is the Pet Health Menu";
-	tft.setCursor(0, 27);
+	char * text = "Pet Health:";
+
+	int randHealth= random(0, 11);
+	DrawExpression(HEART);
+
+	tft.setCursor(0, MIDDLE_MAIN_SCREEN_HEIGHT);
 	tft.setTextColor(S6D02A1_WHITE);
-	tft.setTextWrap(true);
 	tft.println(text);
+	tft.setTextSize(2);
+	tft.setTextColor(S6D02A1_RED);
+
+	tft.print("       x");
+	tft.println(randHealth);
+
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextSize(0);
+
 	delay(2000);
 	ClearMainScreen();
 }
 void dispPetMood(void){
-	ClearMainScreen();
+	ClearMainScreen();	
 	Serial.println("This is the Pet Mood Menu");
-	char * text = "This is the Pet Mood Menu";
-	tft.setCursor(0, 27);
-	tft.setTextColor(S6D02A1_WHITE);
-	tft.setTextWrap(true);
-	tft.println(text);
-	delay(2000);
-	ClearMainScreen();
+	char * text = "Pet Mood:";
 
+	int randMood = random(0, 10);
+	menuFlag = false;
+	disableClock = false;
+	tft.fillRect(1, 136, MAIN_SCREEN_WIDTH - 2, GUI_BOX_HEIGHT - 2, S6D02A1_BLACK); //clear Clock area
+	UpdateClock();
+	PokePet(randMood);
+
+	char * m = Moods[randMood].expression_name;
+	SysMessage = m;
+
+	SystemMessage(SysMessage); //Prints at bottom of screen in case of connection, user action etc.
 }
 void dispPetPersonality(void){
 	ClearMainScreen();
 	Serial.println("This is the Pet Personality Menu");
-	char * text = "This is the Pet Personality Menu";
+	int r = random(0, 12);
+
+	char * text = "Personality:";
 	tft.setCursor(0, 27);
-	tft.setTextColor(S6D02A1_WHITE);
-	tft.setTextWrap(true);
+	
 	tft.println(text);
+	tft.setTextSize(1);
+	tft.println("");
+	tft.setTextColor(S6D02A1_CYAN);
+	tft.println(Personalities[r]);
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.setTextSize(0);
+
 	delay(2000);
 	ClearMainScreen();
 }
@@ -274,61 +339,247 @@ void dispPetPersonality(void){
 void dispFeed(void){
 	ClearMainScreen();
 	Serial.println("This is the dispFeed Menu");
-	char * text = "This is the Feed Menu";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
-	tft.setTextWrap(true);
-	tft.println(text);
-	delay(2000);
+	
+	signed int cost = AStepsTaken - FeedCost;
+	
+	if (cost > 0){
+		tft.println("You feed your pet!");
+		tft.println("");
+		tft.setTextColor(S6D02A1_GREEN);
+
+		tft.print("This cost you: ");
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(FeedCost);
+		tft.setTextColor(S6D02A1_GREEN);
+
+		tft.print(" steps.");
+		tft.println("");
+
+		tft.print("Steps remaining: ");
+
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(AStepsTaken - FeedCost);
+
+		tft.setTextColor(S6D02A1_WHITE);
+
+		AStepsTaken = AStepsTaken - FeedCost;
+
+	}
+	else{
+	
+		tft.print("Sorry you need ");
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(abs(cost));
+		tft.setTextColor(S6D02A1_WHITE);
+
+		tft.print("   more steps to perform that action!");
+	}
+
+
+	delay(5000);
 	ClearMainScreen();
+	ClearStepsScreen();
 
 }
 void dispPlay(void){
 	ClearMainScreen();
 	Serial.println("This is the dispPlay Menu");
-	char * text = "This is the Play Menu";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
-	tft.setTextWrap(true);
-	tft.println(text);
+
+	signed int cost = AStepsTaken - PlayCost;
+
+	if (cost > 0){
+		tft.println("You play with your pet!");
+		tft.println("");
+		tft.setTextColor(S6D02A1_GREEN);
+
+		tft.print("This cost you: ");
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(PlayCost);
+		tft.setTextColor(S6D02A1_GREEN);
+
+		tft.print(" steps.");
+		tft.println("");
+
+		tft.print("Steps remaining: ");
+
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(AStepsTaken - PlayCost);
+
+		tft.setTextColor(S6D02A1_WHITE);
+
+		AStepsTaken = AStepsTaken - PlayCost;
+
+	}
+	else{
+
+		tft.print("Sorry you need ");
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(abs(cost));
+		tft.setTextColor(S6D02A1_WHITE);
+
+		tft.print("   more steps to perform that action!");
+	}
+
 	delay(2000);
 	ClearMainScreen();
+	ClearStepsScreen();
 
 }
 void dispTrick(void){
 	ClearMainScreen();
 	Serial.println("This is the dispTrick Menu");
-	char * text = "This is the Trick Menu";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
-	tft.setTextWrap(true);
-	tft.println(text);
+
+	signed int cost = AStepsTaken - TrickCost;
+
+	if (cost > 0){
+		tft.println("Your pet does a trick!");
+		tft.println("");
+		tft.setTextColor(S6D02A1_GREEN);
+
+		tft.print("This cost you: ");
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(TrickCost);
+		tft.setTextColor(S6D02A1_GREEN);
+
+		tft.print(" steps.");
+		tft.println("");
+
+		tft.print("Steps remaining: ");
+
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(AStepsTaken - TrickCost);
+
+		tft.setTextColor(S6D02A1_WHITE);
+
+		AStepsTaken = AStepsTaken - TrickCost;
+
+	}
+	else{
+
+		tft.print("Sorry you need ");
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(abs(cost));
+		tft.setTextColor(S6D02A1_WHITE);
+
+		tft.print("   more steps to perform that action!");
+	}
+
 	delay(2000);
 	ClearMainScreen();
+	ClearStepsScreen();
 
 }
 void dispSleep(void){
 	ClearMainScreen();
 	Serial.println("This is the dispSleep Menu");
-	char * text = "This is the Sleep Menu";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
-	tft.setTextWrap(true);
-	tft.println(text);
+
+	signed int cost = AStepsTaken - SleepCost;
+
+	if (cost > 0){
+		tft.println("Your pet goes to sleep!");
+		tft.println("");
+		tft.setTextColor(S6D02A1_GREEN);
+
+		tft.print("This cost you: ");
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(SleepCost);
+		tft.setTextColor(S6D02A1_GREEN);
+
+		tft.print(" steps.");
+		tft.println("");
+
+		tft.print("Steps remaining: ");
+
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(AStepsTaken - SleepCost);
+
+		tft.setTextColor(S6D02A1_WHITE);
+
+		AStepsTaken = AStepsTaken - SleepCost;
+
+	}
+	else{
+
+		tft.print("Sorry you need ");
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(abs(cost));
+		tft.setTextColor(S6D02A1_WHITE);
+
+		tft.print("   more steps to perform that action!");
+	}
+
 	delay(2000);
 	ClearMainScreen();
+	ClearStepsScreen();
 
 }
 void dispClean(void){
 	ClearMainScreen();
 	Serial.println("This is the dispClean Menu");
-	char * text = "This is the Clean Menu";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
-	tft.setTextWrap(true);
-	tft.println(text);
+
+	signed int cost = AStepsTaken - CleanCost;
+
+	if (cost > 0){
+		tft.println("You clean your pet!");
+		tft.println("");
+		tft.setTextColor(S6D02A1_GREEN);
+
+		tft.print("This cost you: ");
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(CleanCost);
+		tft.setTextColor(S6D02A1_GREEN);
+
+		tft.print(" steps.");
+		tft.println("");
+
+		tft.print("Steps remaining: ");
+
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(AStepsTaken - CleanCost);
+
+		tft.setTextColor(S6D02A1_WHITE);
+
+		AStepsTaken = AStepsTaken - CleanCost;
+
+	}
+	else{
+
+		tft.print("Sorry you need ");
+		tft.setTextColor(S6D02A1_RED);
+
+		tft.print(abs(cost));
+		tft.setTextColor(S6D02A1_WHITE);
+
+		tft.print("   more steps to perform that action!");
+	}
+
 	delay(2000);
 	ClearMainScreen();
+	ClearStepsScreen();
 
 }
 void dispOptions(void){

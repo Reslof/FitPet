@@ -14,11 +14,9 @@ extern char* Petmenu[];
 
 
 extern MenuFuncPtr Mainmenu_func[];
-extern MenuFuncPtr Petmenu_func[];
+
 
 void CallMenuFunction(int select);
-
-
 void tftMenuSelect(char menuitem, char** MENU);
 void tftMenuInit(char**);
 int getArraySize(char** menu);

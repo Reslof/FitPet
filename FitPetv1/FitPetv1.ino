@@ -59,12 +59,13 @@ float xcal, ycal, zcal, prevAcc = 0.0;
 long last_interrupt_time = 0;        // will store last time LED was updated
 long last_step_save_time = 0;
 long last_message_time = 0;
-unsigned int stepsTaken = 0;
+unsigned int stepsTaken,AStepsTaken = 0;
 unsigned int battery_level = 0;
 char *SysMessage = "";
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 
+int currentPet = 0;
 int  menu_select = 1;     // Currently elected menu item
 char ** current_menu;
 
@@ -79,6 +80,7 @@ int iindex = 0;                  // the index of the current reading
 int total = 0;                  // the running total
 int average = 0;                // the average
 
+unsigned long sysMessageTime;
 
 void setup(void) {
 	Serial.begin(9600);
@@ -130,25 +132,11 @@ void setup(void) {
 	DrawPet(PET);
 #endif
 
+	writeUint(0, 0x3E8); //stores 1000 steps
+	writeUint(10, 0x3E8); //stores 1000 steps
+
 	setSteps(0); //loads step count from memory
 
-	/*
-	Serial.println("******************************");
-	Serial.println("Stored value: ");
-	unsigned int t = 0xFAFA;
-	Serial.println(t, HEX);
-
-	writeUint(0, t);
-	delay(4000);
-	unsigned int a = readUint(0);
-	Serial.println("Read value DEC: ");
-	Serial.println(a, HEX);
-	Serial.println("******************************");
-
-	delay(5000);
-	*/
-
-	//writeUint(0, 0x0000);
 
 	for (int thisReading = 0; thisReading < numReadings; thisReading++)
 		readings[thisReading] = 0;
@@ -159,11 +147,9 @@ void setup(void) {
 	}
 
 void loop() {
-	unsigned long sysMessageTime = millis();
+	sysMessageTime = millis();
 
-	SystemMessage(SysMessage); //Prints at bottom of screen in case of connection, user action etc.
-
-	if (sysMessageTime - last_message_time > 5000){
+	if (sysMessageTime - last_message_time > 8000){
 		EraseSysMessage();
 		last_message_time = sysMessageTime;
 	}
@@ -182,8 +168,12 @@ void loop() {
 
 	if (save_steps_time - last_step_save_time > 5000){
 		Serial.print("Now saving steps: ");
-		Serial.println(stepsTaken);
+		Serial.println(stepsTaken); //keep true count
+		Serial.print("Now saving adjusted steps: ");
+		Serial.println(AStepsTaken); //keep adjusted count
+
 		writeUint(0, stepsTaken);
+		writeUint(10, AStepsTaken);
 		last_step_save_time = save_steps_time;
 	}
 
@@ -237,7 +227,8 @@ void loop() {
 			animatePetFlag = false;
 		}
 		if (!menuFlag && animatePetFlag){ //if handling Pet context
-			PokePet();
+			currentPet = random(0, 4);
+			PokePet(random(0,11));
 		}
 	}
 		
@@ -270,19 +261,7 @@ void SmoothBatteryLevel(){
 	battery_level = map(average, 0, 4095, 0, 100);
 
 }
-void PokePet(void){
-	if (!menuFlag){ //if handling Pet context
-		beep(150);
-		ClearMainScreen();
-#if INCLUDE_SPRITES
-		AnimatePet(random(0, 4));	//This is Poke Pet action
-		beep(150);
-		DrawExpression(random(0, 11)); //get random emotion from being poked
-		delay(1000);
-		ClearExpression();
-#endif
-	}
-}
+
 
 void setMenuFlag(void){
 	Serial.println("BTN1 Pressed");
@@ -423,6 +402,7 @@ int UpdateAccel(void){
 
 		if (acceleration_mag - prevAcc > 0.7){
 			stepsTaken++;
+			AStepsTaken++;
 		}
 
 		prevAcc = acceleration_mag;

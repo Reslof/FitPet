@@ -29,6 +29,7 @@
 extern TFT_S6D02A1 tft;
 extern RTC_DS1307 rtc;
 extern volatile uint8_t highlightLine;
+extern unsigned long sysMessageTime;
 
 
 //expressions
@@ -54,6 +55,9 @@ extern volatile uint8_t highlightLine;
 extern const tImage * Logo[];
 void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y);
 
+extern int currentPet;
+extern boolean menuFlag;
+
 #if INCLUDE_SPRITES
 extern const tImage * emotions[];
 extern const tImage * Luis[];
@@ -65,11 +69,14 @@ void AnimatePet(int);
 void DrawPet(int);
 void DrawExpression(int);
 void ClearExpression(void);
+void PokePet(int);
 #endif
 
 extern boolean disableClock;
 extern boolean enableSysMessage;
 extern unsigned int stepsTaken;
+extern unsigned int AStepsTaken;
+
 extern unsigned int battery_level;
 extern char *SysMessage;
 
@@ -85,6 +92,7 @@ void UpdateBattery(void);
 void UpdateClock(void);
 void UpdateSteps(void);
 void ClearMainScreen(void);
+void ClearStepsScreen(void);
 void EraseBMP(int x, int y);
 void displayMenu(void);
 void DrawMenuItem(char * item, int BG_COLOR = S6D02A1_BLACK);

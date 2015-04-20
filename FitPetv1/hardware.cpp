@@ -295,5 +295,6 @@ void portraitLandscapeHandler()
 
 void setSteps(int correction){
 	stepsTaken = readUint(0);
+	AStepsTaken = readUint(10); // adjusted steps
 	stepsTaken + correction;
 }

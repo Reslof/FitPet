@@ -84,6 +84,20 @@ void ClearExpression(void){
 }
 #endif
 
+void PokePet(int expression){
+	if (!menuFlag){ //if handling Pet context
+		beep(150);
+		ClearMainScreen();
+#if INCLUDE_SPRITES
+		AnimatePet(currentPet);	//This is Poke Pet action
+		beep(150);
+		DrawExpression(expression); //get random emotion from being poked
+		delay(1000);
+		ClearExpression();
+#endif
+	}
+}
+
 void DrawSprite(const tImage * sprite, uint8_t x, uint8_t y) {
 	/// <summary>
 	/// Draws a sprite kept in c file. Sprite must be in RGB565 format using LCD Image Converter from http://code.google.com/p/lcd-image-converter/
@@ -190,6 +204,10 @@ void UpdateClock(void) {
 		*/
 	}
 }
+void ClearStepsScreen(void){
+	tft.setCursor(3, 15);
+	tft.print("          ");
+}
 
 void UpdateSteps(void) {
 	/// <summary>
@@ -199,7 +217,7 @@ void UpdateSteps(void) {
 	//tft.setCursor(3, 15);
 	//tft.print("          ");
 	tft.setCursor(3, 15);
-	tft.print(stepsTaken);
+	tft.print(AStepsTaken);
 }
 
 void DebugMessage(char *message){
