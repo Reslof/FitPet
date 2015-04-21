@@ -387,7 +387,7 @@ void dispFeed(void){
 		tft.print(abs(cost));
 		tft.setTextColor(S6D02A1_WHITE);
 
-		tft.print("   more steps to perform that action!");
+		tft.print("   more steps to performthat action!");
 	}
 
 
@@ -438,7 +438,7 @@ void dispPlay(void){
 		tft.print(abs(cost));
 		tft.setTextColor(S6D02A1_WHITE);
 
-		tft.print("   more steps to perform that action!");
+		tft.print("   more steps to performthat action!");
 	}
 
 	delay(3000);
@@ -488,7 +488,7 @@ void dispTrick(void){
 		tft.print(abs(cost));
 		tft.setTextColor(S6D02A1_WHITE);
 
-		tft.print("   more steps to perform that action!");
+		tft.print("  more steps to        perform that action!");
 	}
 
 	delay(3000);
@@ -538,7 +538,7 @@ void dispSleep(void){
 		tft.print(abs(cost));
 		tft.setTextColor(S6D02A1_WHITE);
 
-		tft.print("   more steps to perform that action!");
+		tft.print("   more steps to performthat action!");
 	}
 
 	delay(3000);
@@ -588,7 +588,7 @@ void dispClean(void){
 		tft.print(abs(cost));
 		tft.setTextColor(S6D02A1_WHITE);
 
-		tft.print("   more steps to perform that action!");
+		tft.print("   more steps to performthat action!");
 	}
 
 	delay(3000);
@@ -599,7 +599,7 @@ void dispClean(void){
 void dispOptions(void){
 	ClearMainScreen();
 	Serial.println("This is the dispOptions Menu");
-	char * text = "This is the Options Menu";
+	char * text = "This is the Options  Menu";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
@@ -628,6 +628,12 @@ void dispStepsTaken(void){
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
 	tft.println(text);
+	if (stepsTaken < 5000){
+		tft.setTextColor(S6D02A1_RED);
+	}
+	else{
+		tft.setTextColor(S6D02A1_GREEN);
+	}
 	tft.setTextSize(2);
 	tft.println(" ");
 	tft.print(stepsTaken);
@@ -653,7 +659,7 @@ void dispGoal(void){
 	tft.setTextColor(S6D02A1_RED);
 	tft.print(abs((signed int)(stepsGoal - stepsTaken)));
 	tft.setTextColor(S6D02A1_CYAN);
-	tft.println(" more steps today!");
+	tft.println(" more steps     today!");
 	tft.println("");
 	tft.setTextColor(S6D02A1_MAGENTA);
 	tft.print("Why don't you go for a walk?");
@@ -706,10 +712,10 @@ void dispStepsLVLUP(void){
 	tft.println("");
 
 	tft.print("You need ");
+	tft.setTextColor(S6D02A1_RED);
 	tft.print(abs(((signed int)(stepsTaken - TrickCost))));
-	tft.println(" more steps to level up.");
-
-
+	tft.setTextColor(S6D02A1_WHITE);
+	tft.println(" more   steps to level up.");
 
 	delay(3000);
 	ClearMainScreen();
@@ -727,6 +733,7 @@ void dispFeedCost(void){
 	tft.println(text1);
 	tft.setTextSize(2);
 	tft.println(" ");
+	tft.setTextColor(S6D02A1_RED);
 	tft.println(text2);
 	delay(3000);
 	resetText();
@@ -744,6 +751,7 @@ void dispPlayCost(void){
 	tft.println(text1);
 	tft.setTextSize(2);
 	tft.println(" ");
+	tft.setTextColor(S6D02A1_RED);
 	tft.println(text2);
 	delay(3000);
 	resetText();
@@ -754,13 +762,14 @@ void dispTrickCost(void){
 	ClearMainScreen();
 	Serial.println("This is the dispTrickCost Menu");
 	char * text1 = "The cost of having   your pet do a trick  is:";
-	char * text2 = "600 Steps";
+	char * text2 = "5000 Steps";
 	tft.setCursor(0, 27);
 	tft.setTextColor(S6D02A1_WHITE);
 	tft.setTextWrap(true);
 	tft.println(text1);
 	tft.setTextSize(2);
 	tft.println(" ");
+	tft.setTextColor(S6D02A1_RED);
 	tft.println(text2);
 	delay(3000);
 	resetText();
@@ -778,6 +787,7 @@ void dispSleepCost(void){
 	tft.println(text1);
 	tft.setTextSize(2);
 	tft.println(" ");
+	tft.setTextColor(S6D02A1_RED);
 	tft.println(text2);
 	delay(3000);
 	resetText();
@@ -795,6 +805,7 @@ void dispCleanCost(void){
 	tft.println(text1);
 	tft.setTextSize(2);
 	tft.println(" ");
+	tft.setTextColor(S6D02A1_RED);
 	tft.println(text2);
 	delay(3000);
 	resetText();
