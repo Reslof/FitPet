@@ -134,8 +134,8 @@ void setup(void) {
 	DrawPet(PET);
 #endif
 
-	writeUint(0, 0x3E8); //stores 1000 steps
-	writeUint(10, 0x3E8); //stores 1000 steps
+	//writeUint(0, 0x3E8); //stores 1000 steps
+	//writeUint(10, 0x3E8); //stores 1000 steps
 
 	setSteps(0); //loads step count from memory
 
@@ -222,7 +222,13 @@ void loop() {
 			tftMenuSelect(1, current_menu); 
 		}
 		
-	 }
+	}
+	if (digitalRead(BTN2) && !menuFlag){
+		AStepsTaken = AStepsTaken + 1000;
+		stepsTaken = stepsTaken + 1000;
+		Serial.println("Stored 1000 extra steps.");
+	}
+
 	if (digitalRead(BTN3)){
 		Serial.println("BTN3 Pressed");
 		animatePetFlag = true;

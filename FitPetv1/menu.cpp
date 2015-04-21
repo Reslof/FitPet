@@ -659,7 +659,7 @@ void dispGoal(void){
 	tft.setTextColor(S6D02A1_RED);
 	tft.print(abs((signed int)(stepsGoal - stepsTaken)));
 	tft.setTextColor(S6D02A1_CYAN);
-	tft.println(" more steps     today!");
+	tft.println(" more steps      today!");
 	tft.println("");
 	tft.setTextColor(S6D02A1_MAGENTA);
 	tft.print("Why don't you go for a walk?");
