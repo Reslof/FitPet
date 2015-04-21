@@ -158,6 +158,7 @@ void loop() {
 	if (sysMessageTime - last_message_time > 8000){
 		EraseSysMessage();
 		last_message_time = sysMessageTime;
+		doubleStepsFlag = false;
 	}
 
 	unsigned long interrupt_time = millis();
@@ -351,10 +352,11 @@ void HandleBTCommands(void){//handles Bluetooth commands!!!!
 	String showPet = "pet\n";
 
 	if (inputString.equalsIgnoreCase(Pet)){
-		SysMessage="Pet nearby!";
+		SysMessage="Friendly pet nearby!";
 		SystemMessage(SysMessage);
 		doubleStepsFlag = true;
 	}
+
 
 	if (inputString.equalsIgnoreCase("setsteps")){
 		writeUint(0, 0x3E8); //stores 1000 steps

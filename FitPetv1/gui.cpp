@@ -204,10 +204,10 @@ void UpdateClock(void) {
 		*/
 	}
 	else{
-		tft.setCursor(34, 138);
+		tft.setCursor(12, 138);
 		tft.setTextColor(S6D02A1_RED);
 		tft.println("NO CLOCK DETECTED");
-		resetText();
+		tft.setTextColor(S6D02A1_WHITE);
 	}
 }
 void ClearStepsScreen(void){
