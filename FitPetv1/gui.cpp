@@ -139,8 +139,11 @@ void UpdateBattery(void) {
 		tft.print(" ");
 	}
 
-	tft.print(battery_level);
-	tft.print("%");
+	tft.println("N/A");
+	//tft.print(battery_level);
+	//tft.print("%");
+
+	
 }
 void UpdateClock(void) {
 	/// <summary>

@@ -334,7 +334,7 @@ void RunInitTests(void){
 		EEPROM_available = false;
 	}
 
-	rtc.adjust(DateTime(__DATE__, __TIME__));
+	//rtc.adjust(DateTime(__DATE__, __TIME__));
 	if (!rtc.isrunning()) {
 		Serial.println("RTC is NOT running!");
 		delay(2000);
